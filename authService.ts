@@ -4,8 +4,8 @@ import { UserAccount, UserStatus } from './types';
 const USERS_DB_KEY = 'myplans_database_users';
 
 /**
- * CONFIGURAÇÃO DA VPS NA HOSTINGER
- * Tente mudar para 'https' caso o link sslip.io suporte, para evitar erros de conteúdo misto.
+ * URL DA API NA HOSTINGER
+ * O Coolify usa o sslip.io por padrão.
  */
 const API_URL: string = "http://y0c00ckwckwo04w0ocosc4go.145.223.92.165.sslip.io"; 
 
@@ -21,7 +21,7 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos de timeout
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
 
     const response = await fetch(`${baseUrl}${endpoint}`, {
       ...options,
@@ -38,22 +38,22 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Servidor respondeu com erro ${response.status}`);
+      throw new Error(errorData.message || `Erro ${response.status}: O backend está rodando mas o Banco de Dados pode estar inacessível.`);
     }
     return response.json();
   } catch (error: any) {
-    console.error("ERRO CRÍTICO NA CONEXÃO VPS:", error);
+    console.error("FALHA DE COMUNICAÇÃO VPS:", error);
     
     if (error.name === 'AbortError') {
-      throw new Error("A VPS demorou muito para responder (Timeout). Verifique se o backend no Coolify está realmente ativo.");
+      throw new Error("A VPS demorou muito para responder. Verifique se o servidor não está sobrecarregado.");
     }
 
     if (error.message === 'Failed to fetch') {
       throw new Error(
-        "ERRO DE CONEXÃO (Failed to fetch):\n\n" +
-        "1. No Coolify, mude a variável para DATABASE_URL (tudo maiúsculo).\n" +
-        "2. Certifique-se de clicar em 'Redeploy' após mudar a variável.\n" +
-        "3. Verifique se o seu navegador não está bloqueando 'http' em um site 'https'."
+        "NÃO FOI POSSÍVEL CONECTAR À VPS:\n\n" +
+        "1. No Coolify, mude a variável para DATABASE_URL.\n" +
+        "2. Certifique-se de que clicou em 'Redeploy' (e que o deploy não falhou).\n" +
+        "3. Verifique se a VPS tem espaço em disco livre."
       );
     }
     throw error;
@@ -66,7 +66,7 @@ export const db = {
       try {
         return await apiFetch('/admin/users');
       } catch (e) {
-        console.warn("API Offline, lendo do cache local.");
+        console.warn("API offline, usando dados locais.");
       }
     }
     const data = localStorage.getItem(USERS_DB_KEY);
