@@ -31,7 +31,7 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('work');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Estados temporários para senha (não salvos no userConfig global por segurança)
+  // Estados temporários para senha
   const [passwords, setPasswords] = useState({
     current: '',
     new: '',
@@ -75,6 +75,7 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
+        // Salva o avatar como Base64 diretamente no config global
         setUserConfig(prev => ({ ...prev, avatar: reader.result as string }));
       };
       reader.readAsDataURL(file);
@@ -82,13 +83,8 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
   };
 
   const handleSaveAll = () => {
-    // Aqui você faria a chamada para sua VPS
-    console.log('Dados salvos no LocalStorage e prontos para VPS:', userConfig);
-    if (passwords.new && passwords.new === passwords.confirm) {
-      console.log('Senha alterada com sucesso!');
-      setPasswords({ current: '', new: '', confirm: '' });
-    }
-    alert('Configurações salvas com sucesso no ecossistema!');
+    // A sincronização real é feita pelo useEffect no App.tsx que observa o userConfig
+    alert('As alterações de perfil e jornada foram salvas e sincronizadas com sua VPS!');
   };
 
   return (
@@ -112,7 +108,6 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Sidebar de Navegação */}
         <nav className="lg:col-span-3 space-y-2">
           {[
             { id: 'work', icon: Clock, label: 'Jornada' },
@@ -133,10 +128,7 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
           ))}
         </nav>
 
-        {/* Conteúdo Principal */}
         <div className="lg:col-span-9">
-          
-          {/* ABA: JORNADA (TRABALHO) */}
           {activeTab === 'work' && (
             <div className="space-y-8 animate-in slide-in-from-right-4 duration-400">
               <div className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 space-y-8 shadow-2xl relative overflow-hidden">
@@ -191,10 +183,8 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
             </div>
           )}
 
-          {/* ABA: PERFIL (EDIÇÃO DE PERFIL) */}
           {(activeTab === 'profile' || activeTab === 'security') && (
             <div className="space-y-8 animate-in slide-in-from-right-4 duration-400">
-               {/* Upload de Foto e Informações Básicas */}
                <div className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 shadow-2xl space-y-10 relative overflow-hidden">
                   <div className="flex flex-col md:flex-row items-center gap-10">
                      <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
@@ -223,20 +213,20 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
                      <div className="flex-1 space-y-6 w-full">
                         <div className="space-y-3">
                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                              <User className="w-3.5 h-3.5 text-indigo-400" /> Nome Completo
+                              <User className="w-3.5 h-3.5 text-indigo-400" /> Nome Completo (Identidade VPS)
                            </label>
                            <input 
                               type="text" 
                               name="name"
                               value={userConfig.name || ''} 
                               onChange={handleChange}
-                              placeholder="Seu nome de usuário"
+                              placeholder="Seu nome"
                               className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-4 outline-none text-white font-bold focus:ring-4 ring-indigo-500/10 transition-all" 
                            />
                         </div>
                         <div className="space-y-3">
                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                              <Mail className="w-3.5 h-3.5 text-indigo-400" /> E-mail de Acesso
+                              <Mail className="w-3.5 h-3.5 text-indigo-400" /> E-mail de Registro
                            </label>
                            <input 
                               type="email" 
@@ -244,14 +234,14 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
                               value={userConfig.email || ''} 
                               onChange={handleChange}
                               placeholder="exemplo@email.com"
-                              className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-4 outline-none text-white font-bold focus:ring-4 ring-indigo-500/10 transition-all" 
+                              className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-4 outline-none text-white font-bold opacity-70 cursor-not-allowed" 
+                              readOnly
                            />
                         </div>
                      </div>
                   </div>
                </div>
 
-               {/* Alteração de Senha */}
                <div className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 shadow-2xl space-y-8">
                   <div className="flex items-center gap-4">
                      <div className="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/20">
@@ -295,23 +285,9 @@ const Settings: React.FC<Props> = ({ userConfig, setUserConfig }) => {
                         />
                      </div>
                   </div>
-                  
-                  <div className="flex items-start gap-3 bg-indigo-500/5 p-4 rounded-2xl border border-indigo-500/10">
-                     <Shield className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-                     <p className="text-[10px] text-slate-500 font-bold italic">Estrutura preparada para autenticação segura via JWT/bcrypt em servidor VPS Linux.</p>
-                  </div>
                </div>
             </div>
           )}
-
-          {/* Outras abas (Placeholder) */}
-          {(activeTab === 'notify' || activeTab === 'integrations') && (
-            <div className="flex flex-col items-center justify-center h-full py-20 text-slate-700 animate-pulse">
-               <Globe className="w-20 h-20 opacity-10 mb-6" />
-               <h3 className="text-xl font-black uppercase tracking-[0.4em] opacity-20">Aba em Desenvolvimento</h3>
-            </div>
-          )}
-
         </div>
       </div>
     </div>

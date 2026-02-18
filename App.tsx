@@ -64,14 +64,21 @@ const App: React.FC = () => {
     workStart: '09:00',
     workEnd: '18:00',
     dailyTargetHours: 8,
-    name: 'Usuário Pro',
-    email: 'contato@myplans.ai',
+    name: 'Usuário',
+    email: '',
     workingDays: [1, 2, 3, 4, 5]
   }));
 
+  // Efeito para carregar TUDO da VPS quando o usuário logar
   useEffect(() => {
     if (isLoggedIn) {
       const userId = localStorage.getItem('myplans_userid') || "master_user";
+      
+      // Pull das configurações (Inclui Nome, Email e Avatar)
+      db.pullData(userId, 'config', userConfig).then(data => {
+        if (data) setUserConfig(data);
+      });
+
       db.pullData(userId, 'tasks', []).then(setTasks);
       db.pullData(userId, 'ideas', []).then(setIdeas);
       db.pullData(userId, 'goals', []).then(setGoals);
@@ -81,9 +88,12 @@ const App: React.FC = () => {
     }
   }, [isLoggedIn]);
 
+  // Sincronização automática para a VPS (Debounce de 2s)
   useEffect(() => {
     if (isLoggedIn) {
-      const userId = localStorage.getItem('myplans_userid') || "master_user";
+      const userId = localStorage.getItem('myplans_userid');
+      if (!userId) return;
+
       const timer = setTimeout(() => {
         db.pushData(userId, 'tasks', tasks);
         db.pushData(userId, 'ideas', ideas);
@@ -92,6 +102,8 @@ const App: React.FC = () => {
         db.pushData(userId, 'scripts', scripts);
         db.pushData(userId, 'workLogs', workLogs);
         db.pushData(userId, 'config', userConfig);
+        // Salva localmente como backup rápido
+        localStorage.setItem('myplans_config_v3', JSON.stringify(userConfig));
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -106,6 +118,14 @@ const App: React.FC = () => {
       if (res && res.success) {
         localStorage.setItem('myplans_auth', 'true');
         localStorage.setItem('myplans_userid', res.user.id);
+        
+        // Atualiza o config com os dados reais do banco imediatamente
+        setUserConfig(prev => ({
+          ...prev,
+          name: res.user.name || prev.name,
+          email: res.user.email || prev.email
+        }));
+        
         setIsLoggedIn(true);
       } else {
         alert(res?.error || "Erro de credenciais ou conexão.");
@@ -222,7 +242,17 @@ const App: React.FC = () => {
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-20 border-b border-slate-800 bg-slate-900/30 backdrop-blur-md flex items-center justify-between px-8">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2.5 bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all"><Clock className="w-5 h-5" /></button>
-          <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-indigo-400 uppercase">{userConfig.name?.charAt(0)}</div>
+          
+          <div className="flex items-center gap-3">
+            <span className="hidden md:block text-[10px] font-black uppercase text-slate-500 tracking-widest">{userConfig.name}</span>
+            <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-indigo-400 overflow-hidden shadow-lg">
+              {userConfig.avatar ? (
+                <img src={userConfig.avatar} alt="Perfil" className="w-full h-full object-cover" />
+              ) : (
+                userConfig.name?.charAt(0).toUpperCase()
+              )}
+            </div>
+          </div>
         </header>
         <div className="flex-1 overflow-y-auto p-10">{renderContent()}</div>
       </main>
