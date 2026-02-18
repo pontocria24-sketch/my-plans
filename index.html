@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>my plans</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Babel para transpilação em tempo real -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -31,9 +33,10 @@
   }
 }
 </script>
-    <script type="module" src="./index.tsx"></script>
   </head>
   <body class="bg-slate-950 text-slate-100 overflow-x-hidden">
     <div id="root"></div>
+    <!-- Script carregado via Babel para suportar JSX/TSX -->
+    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
   </body>
 </html>
