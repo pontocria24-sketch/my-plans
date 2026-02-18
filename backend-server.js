@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // --- SERVIR O FRONTEND ---
-// Em containers Docker, os arquivos ficam na raiz do WORKDIR (/app)
+// Serve os arquivos estáticos da raiz (onde o Docker copia o projeto)
 app.use(express.static(path.join(__dirname)));
 
 // --- API DE BANCO DE DADOS ---
@@ -32,7 +32,6 @@ app.get('/api/health', (req, res) => {
 
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
-  // Login simplificado para VPS
   res.json({
     id: "vps_admin",
     name: "Usuário VPS",
@@ -93,10 +92,11 @@ app.post('/api/sync/tasks', async (req, res) => {
 });
 
 // Fallback para Single Page Application (SPA)
+// Isso garante que se você der F5 em uma rota do React, ele não dê 404
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
-  console.log(`🚀 MyPlans rodando na VPS (Porta ${port})`);
+  console.log(`🚀 MyPlans rodando na VPS unificado na porta ${port}`);
 });
