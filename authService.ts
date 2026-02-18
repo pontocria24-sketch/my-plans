@@ -4,8 +4,8 @@ import { UserAccount, UserStatus } from './types';
 const USERS_DB_KEY = 'myplans_database_users';
 
 /**
- * CONEXÃO ATIVA:
- * O sistema agora aponta para a sua instância do Coolify na Hostinger.
+ * CONFIGURAÇÃO DA VPS NA HOSTINGER
+ * Tente mudar para 'https' caso o link sslip.io suporte, para evitar erros de conteúdo misto.
  */
 const API_URL: string = "http://y0c00ckwckwo04w0ocosc4go.145.223.92.165.sslip.io"; 
 
@@ -20,21 +20,42 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
   
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos de timeout
+
     const response = await fetch(`${baseUrl}${endpoint}`, {
       ...options,
+      signal: controller.signal,
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         ...options.headers,
       },
     });
     
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Erro na comunicação com a VPS.");
+      throw new Error(errorData.message || `Servidor respondeu com erro ${response.status}`);
     }
     return response.json();
-  } catch (error) {
-    console.error("Falha na API:", error);
+  } catch (error: any) {
+    console.error("ERRO CRÍTICO NA CONEXÃO VPS:", error);
+    
+    if (error.name === 'AbortError') {
+      throw new Error("A VPS demorou muito para responder (Timeout). Verifique se o backend no Coolify está realmente ativo.");
+    }
+
+    if (error.message === 'Failed to fetch') {
+      throw new Error(
+        "ERRO DE CONEXÃO (Failed to fetch):\n\n" +
+        "1. No Coolify, mude a variável para DATABASE_URL (tudo maiúsculo).\n" +
+        "2. Certifique-se de clicar em 'Redeploy' após mudar a variável.\n" +
+        "3. Verifique se o seu navegador não está bloqueando 'http' em um site 'https'."
+      );
+    }
     throw error;
   }
 };
@@ -45,7 +66,7 @@ export const db = {
       try {
         return await apiFetch('/admin/users');
       } catch (e) {
-        console.warn("API Offline ou em carregamento, tentando dados locais...");
+        console.warn("API Offline, lendo do cache local.");
       }
     }
     const data = localStorage.getItem(USERS_DB_KEY);
@@ -65,8 +86,8 @@ export const db = {
           method: 'POST',
           body: JSON.stringify({ name, email, password })
         });
-      } catch (err) {
-        return { success: false, message: 'VPS Hostinger indisponível. Verifique se o deploy no Coolify concluiu com sucesso.' };
+      } catch (err: any) {
+        return { success: false, message: err.message };
       }
     }
 
@@ -99,8 +120,8 @@ export const db = {
           method: 'POST',
           body: JSON.stringify({ email, password })
         });
-      } catch (err) {
-        return { success: false, message: 'Erro ao conectar com a VPS no link sslip.io.' };
+      } catch (err: any) {
+        return { success: false, message: err.message };
       }
     }
 
