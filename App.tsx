@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Lightbulb, Target, Calendar, 
   Video, Settings as SettingsIcon, Timer, Rocket, Clock, 
-  Lock, User, ArrowRight, ShieldCheck, Mail, Info, Users, UserPlus, LogOut
+  Lock, User, ArrowRight, ShieldCheck, Mail, Info, Users, UserPlus, LogOut, Database,
+  Wifi, WifiOff
 } from 'lucide-react';
 import { View, Task, Idea, Goal, Event, ContentScript, WorkLog, UserConfig, UserAccount } from './types';
-import { db } from './authService';
+import { db, isUsingAPI } from './authService';
 import Dashboard from './components/Dashboard';
 import TaskManager from './components/TaskManager';
 import IdeaBoard from './components/IdeaBoard';
@@ -49,6 +50,7 @@ const App: React.FC = () => {
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'pending'>('login');
   const [activeView, setActiveView] = useState<View>('Dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Form states
   const [email, setEmail] = useState('');
@@ -85,27 +87,34 @@ const App: React.FC = () => {
     }
   }, [tasks, ideas, goals, events, scripts, workLogs, userConfig, currentUser]);
 
-  const handleAuth = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    if (authMode === 'login') {
-      const result = db.login(email, password);
-      if (result.success && result.user) {
-        setCurrentUser(result.user);
-        setIsLoggedIn(true);
+    try {
+      if (authMode === 'login') {
+        const result = await db.login(email, password);
+        if (result.success && result.user) {
+          setCurrentUser(result.user);
+          setIsLoggedIn(true);
+        } else {
+          if (result.status === 'Pending') setAuthMode('pending');
+          setError(result.message || 'Erro ao entrar.');
+        }
       } else {
-        if ((result as any).status === 'Pending') setAuthMode('pending');
-        setError(result.message || 'Erro ao entrar.');
+        const result = await db.register(name, email, password);
+        if (result.success) {
+          setAuthMode('pending');
+          setError('');
+        } else {
+          setError(result.message);
+        }
       }
-    } else {
-      const result = db.register(name, email, password);
-      if (result.success) {
-        setAuthMode('pending');
-        setError('');
-      } else {
-        setError(result.message);
-      }
+    } catch (err) {
+      setError('Falha na comunicação com o servidor.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,9 +171,10 @@ const App: React.FC = () => {
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                         <input 
                           type="text" required
-                          className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-white font-bold outline-none focus:border-indigo-500 transition-all"
+                          className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-white font-bold outline-none focus:border-indigo-500 transition-all disabled:opacity-50"
                           placeholder="Como quer ser chamado?"
                           value={name}
+                          disabled={isLoading}
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
@@ -177,9 +187,10 @@ const App: React.FC = () => {
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                       <input 
                         type="email" required
-                        className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-white font-bold outline-none focus:border-indigo-500 transition-all"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-white font-bold outline-none focus:border-indigo-500 transition-all disabled:opacity-50"
                         placeholder="exemplo@email.com"
                         value={email}
+                        disabled={isLoading}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
@@ -191,9 +202,10 @@ const App: React.FC = () => {
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                       <input 
                         type="password" required
-                        className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-white font-bold outline-none focus:border-indigo-500 transition-all"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-white font-bold outline-none focus:border-indigo-500 transition-all disabled:opacity-50"
                         placeholder="••••••••"
                         value={password}
+                        disabled={isLoading}
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
@@ -207,11 +219,19 @@ const App: React.FC = () => {
 
                   <button 
                     type="submit"
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-indigo-600/20 active:scale-95 transition-all flex items-center justify-center gap-3 border border-indigo-500/30"
+                    disabled={isLoading}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-indigo-600/20 active:scale-95 transition-all flex items-center justify-center gap-3 border border-indigo-500/30 disabled:bg-slate-800 disabled:cursor-not-allowed"
                   >
-                    {authMode === 'login' ? 'Entrar' : 'Registrar Agora'} <ArrowRight className="w-4 h-4" />
+                    {isLoading ? 'Conectando...' : (authMode === 'login' ? 'Entrar' : 'Registrar Agora')} <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
+
+                <div className="mt-6 p-4 bg-slate-950/50 rounded-2xl border border-slate-800/60 flex items-start gap-3">
+                  <Database className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                  <p className="text-[9px] text-slate-500 font-medium leading-relaxed uppercase tracking-wider">
+                    Nota: O app detectará automaticamente o backend na sua VPS assim que estiver configurado no Coolify.
+                  </p>
+                </div>
 
                 <div className="mt-8 pt-8 border-t border-slate-800 flex flex-col gap-4 items-center">
                   <button 
@@ -241,7 +261,7 @@ const App: React.FC = () => {
       case 'Calendar': return <CalendarView events={events} setEvents={setEvents} tasks={tasks} />;
       case 'Content': return <ContentManager scripts={scripts} setScripts={setScripts} tasks={tasks} setTasks={setTasks} />;
       case 'TimeTracker': return <TimeTracker workLogs={workLogs} setWorkLogs={setWorkLogs} userConfig={userConfig} />;
-      case 'Settings': return <Settings userConfig={userConfig} setUserConfig={setUserConfig} />;
+      case 'Settings': return <Settings userConfig={userConfig} setUserConfig={setUserConfig} currentUser={currentUser} />;
       case 'AdminUsers': return <AdminUsers />;
       default: return <Dashboard tasks={tasks} goals={goals} events={events} workLogs={workLogs} userConfig={userConfig} />;
     }
@@ -258,7 +278,6 @@ const App: React.FC = () => {
     { id: 'Settings', icon: SettingsIcon, label: 'Ajustes' },
   ];
 
-  // Adiciona item de administração apenas para Admins
   if (currentUser?.role === 'Admin') {
     menuItems.push({ id: 'AdminUsers', icon: Users, label: 'Gerenciar Acessos' });
   }
@@ -301,13 +320,22 @@ const App: React.FC = () => {
             </button>
             <h2 className="text-sm font-black text-white uppercase tracking-widest">{activeView}</h2>
           </div>
-          <div className="flex items-center gap-4">
-             <div className="flex flex-col items-end mr-2">
-                <span className="text-[10px] font-black text-white uppercase tracking-widest">{currentUser?.name}</span>
-                <span className="text-[8px] font-bold text-indigo-400 uppercase tracking-widest">{currentUser?.role === 'Admin' ? 'Administrador' : 'Membro'}</span>
+          
+          <div className="flex items-center gap-6">
+             {/* Indicador de Status do Banco de Dados VPS */}
+             <div className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full border text-[9px] font-black uppercase tracking-widest ${isUsingAPI() ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-amber-500/10 border-amber-500/30 text-amber-400'}`}>
+                {isUsingAPI() ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+                {isUsingAPI() ? 'Nuvem VPS Ativa' : 'Modo Local (Offline)'}
              </div>
-             <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-indigo-400">
-               {currentUser?.name?.charAt(0)}
+
+             <div className="flex items-center gap-4">
+                <div className="flex flex-col items-end mr-2">
+                    <span className="text-[10px] font-black text-white uppercase tracking-widest">{currentUser?.name}</span>
+                    <span className="text-[8px] font-bold text-indigo-400 uppercase tracking-widest">{currentUser?.role === 'Admin' ? 'Administrador' : 'Membro'}</span>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-indigo-400">
+                  {currentUser?.name?.charAt(0)}
+                </div>
              </div>
           </div>
         </header>
