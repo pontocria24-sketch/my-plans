@@ -1,36 +1,9 @@
 
-export type Priority = 'High' | 'Medium' | 'Low';
+export type Priority = 'Urgent' | 'High' | 'Medium' | 'Low';
 export type Status = 'Pending' | 'InProgress' | 'Paused' | 'AwaitingPost' | 'Completed';
 export type Platform = 'Instagram' | 'YouTube' | 'TikTok';
 export type RecurringInterval = 'Daily' | 'Weekly' | 'Monthly' | 'None';
 export type GoalType = 'Monthly' | 'Yearly' | 'Custom';
-
-export type BreakType = 'Coffee' | 'Lunch' | 'Generic';
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  token?: string;
-}
-
-export interface WorkBreak {
-  start: string;
-  end?: string;
-  type: BreakType;
-}
-
-export interface WorkLog {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime?: string;
-  breaks: WorkBreak[];
-  isActive: boolean;
-  isOnBreak: boolean;
-  earlyEndReason?: string;
-}
 
 export interface SubTask {
   id: string;
@@ -54,7 +27,6 @@ export interface Task {
   recurringInterval?: RecurringInterval;
   progress: number;
   linkedContentId?: string;
-  userId?: string; // Vincula a tarefa ao usuário logado
 }
 
 export interface Idea {
@@ -83,7 +55,7 @@ export interface Goal {
   unit: string;
   category: string;
   type: GoalType;
-  monthReference: string;
+  monthReference: string; // Formato YYYY-MM ou nome do período
   isArchived: boolean;
   history?: GoalHistory[];
 }
@@ -103,7 +75,7 @@ export interface ContentScript {
   id: string;
   title: string;
   platform: Platform;
-  format: string;
+  format: string; // Novo campo: Reel, Carrossel, Short, etc.
   hook: string;
   sceneDirection: string;
   body: string;
@@ -113,25 +85,39 @@ export interface ContentScript {
   date: string;
   startDate?: string;
   endDate?: string;
-  recordingDate?: string;
+  recordingDate?: string; // Novo campo específico
+}
+
+export type BreakType = 'Coffee' | 'Lunch' | 'Generic';
+
+export interface WorkBreak {
+  start: string;
+  end?: string;
+  type: BreakType;
+}
+
+export interface WorkLog {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime?: string;
+  breaks: WorkBreak[];
+  isActive: boolean;
+  isOnBreak: boolean;
+  earlyEndReason?: string;
 }
 
 export interface UserConfig {
   workStart: string;
   workEnd: string;
   dailyTargetHours: number;
-  workingDays: number[];
-  lunchDuration: number;
-  coffeeDuration: number;
+  workingDays: number[]; // 0-6 (Domingo-Sábado)
+  lunchDuration: number; // minutos
+  coffeeDuration: number; // minutos
+  // Perfil
   name?: string;
   email?: string;
   avatar?: string;
-  dbHost?: string;
-  dbPort?: string;
-  dbName?: string;
-  dbUser?: string;
-  dbPassword?: string;
-  syncEnabled?: boolean;
 }
 
-export type View = 'Dashboard' | 'Tasks' | 'Ideas' | 'Goals' | 'Calendar' | 'Content' | 'TimeTracker' | 'Settings' | 'Login';
+export type View = 'Dashboard' | 'Tasks' | 'Ideas' | 'Goals' | 'Calendar' | 'Content' | 'TimeTracker' | 'Settings';
