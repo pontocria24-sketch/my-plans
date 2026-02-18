@@ -13,13 +13,19 @@ const DATABASE_URL = process.env.DATABASE_URL;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
+// --- CORREÇÃO DE MIME TYPES PARA .TS e .TSX ---
+// Isso impede a tela preta pois o navegador passa a aceitar os arquivos como scripts
+express.static.mime.define({'application/javascript': ['ts', 'tsx']});
+
 // --- LÓGICA DE PERSISTÊNCIA (POSTGRES OU JSON) ---
 let pool = null;
 if (DATABASE_URL) {
   console.log('[MYPLANS] Conectando ao PostgreSQL do Coolify...');
-  pool = new Pool({ connectionString: DATABASE_URL });
+  pool = new Pool({ 
+    connectionString: DATABASE_URL,
+    ssl: DATABASE_URL.includes('sslmode=disable') ? false : { rejectUnauthorized: false }
+  });
   
-  // Criar tabelas se não existirem
   const initDb = async () => {
     try {
       await pool.query(`
@@ -55,7 +61,6 @@ if (DATABASE_URL) {
 app.post('/api/sync/:userId/:key', async (req, res) => {
   const { userId, key } = req.params;
   const { data } = req.body;
-  
   try {
     if (pool) {
       await pool.query(
@@ -89,7 +94,6 @@ app.get('/api/sync/:userId/:key', async (req, res) => {
   }
 });
 
-// --- API: Autenticação ---
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -110,7 +114,6 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/auth/register', async (req, res) => {
   const { name, email, password } = req.body;
   const userId = Date.now().toString();
-  
   try {
     if (pool) {
       await pool.query('INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)', [userId, name, email, password]);
@@ -128,7 +131,9 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+// Servir arquivos estáticos (com MIME type corrigido acima)
 app.use(express.static(__dirname));
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
