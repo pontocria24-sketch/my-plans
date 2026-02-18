@@ -12,11 +12,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // --- SERVIR O FRONTEND ---
-// Serve todos os arquivos da pasta raiz (onde o Docker copia o projeto)
-app.use(express.static(__dirname));
+// Em containers Docker, os arquivos ficam na raiz do WORKDIR (/app)
+app.use(express.static(path.join(__dirname)));
 
 // --- API DE BANCO DE DADOS ---
-
 const getPool = (creds) => {
   return new Pool({
     user: creds.user || process.env.DB_USER || 'postgres',
@@ -28,16 +27,17 @@ const getPool = (creds) => {
 };
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'online', mode: 'VPS_UNIFIED', timestamp: new Date() });
+  res.json({ status: 'online', mode: 'PRODUCTION_VPS', timestamp: new Date() });
 });
 
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
+  // Login simplificado para VPS
   res.json({
     id: "vps_admin",
     name: "Usuário VPS",
     email: email,
-    token: "vps_token_" + Date.now()
+    token: "vps_auth_" + Date.now()
   });
 });
 
@@ -85,18 +85,18 @@ app.post('/api/sync/tasks', async (req, res) => {
     }
     res.json({ success: true, count: tasks.length });
   } catch (err) {
-    console.error("Erro no DB:", err);
+    console.error("Erro no Banco de Dados:", err);
     res.status(500).json({ error: err.message });
   } finally {
     await pool.end();
   }
 });
 
-// Fallback para SPA: Se a rota não for API, serve o index.html
+// Fallback para Single Page Application (SPA)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Ecossistema MyPlans rodando unificado na porta ${port}`);
+  console.log(`🚀 MyPlans rodando na VPS (Porta ${port})`);
 });
