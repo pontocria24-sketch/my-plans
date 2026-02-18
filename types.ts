@@ -5,6 +5,21 @@ export type Platform = 'Instagram' | 'YouTube' | 'TikTok';
 export type RecurringInterval = 'Daily' | 'Weekly' | 'Monthly' | 'None';
 export type GoalType = 'Monthly' | 'Yearly' | 'Custom';
 
+// User status types for authentication and account management
+export type UserStatus = 'Active' | 'Inactive' | 'Suspended';
+export type UserRole = 'Admin' | 'User';
+
+// User account interface for authentication service
+export interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  password?: string;
+  role: UserRole;
+  status: UserStatus;
+  createdAt: string;
+}
+
 export interface SubTask {
   id: string;
   title: string;
@@ -55,7 +70,7 @@ export interface Goal {
   unit: string;
   category: string;
   type: GoalType;
-  monthReference: string; 
+  monthReference: string; // Formato YYYY-MM ou nome do período
   isArchived: boolean;
   history?: GoalHistory[];
 }
@@ -75,7 +90,7 @@ export interface ContentScript {
   id: string;
   title: string;
   platform: Platform;
-  format: string; 
+  format: string; // Novo campo: Reel, Carrossel, Short, etc.
   hook: string;
   sceneDirection: string;
   body: string;
@@ -85,7 +100,7 @@ export interface ContentScript {
   date: string;
   startDate?: string;
   endDate?: string;
-  recordingDate?: string; 
+  recordingDate?: string; // Novo campo específico
 }
 
 export type BreakType = 'Coffee' | 'Lunch' | 'Generic';
@@ -111,25 +126,13 @@ export interface UserConfig {
   workStart: string;
   workEnd: string;
   dailyTargetHours: number;
-  workingDays: number[]; 
-  lunchDuration: number; 
-  coffeeDuration: number; 
+  workingDays: number[]; // 0-6 (Domingo-Sábado)
+  lunchDuration: number; // minutos
+  coffeeDuration: number; // minutos
+  // Perfil
   name?: string;
   email?: string;
   avatar?: string;
 }
 
-export type UserStatus = 'Pending' | 'Active' | 'Blocked';
-export type UserRole = 'Admin' | 'User';
-
-export interface UserAccount {
-  id: string;
-  email: string;
-  password?: string; // Em uma VPS real, seria um hash
-  name: string;
-  status: UserStatus;
-  role: UserRole;
-  createdAt: string;
-}
-
-export type View = 'Dashboard' | 'Tasks' | 'Ideas' | 'Goals' | 'Calendar' | 'Content' | 'TimeTracker' | 'Settings' | 'AdminUsers';
+export type View = 'Dashboard' | 'Tasks' | 'Ideas' | 'Goals' | 'Calendar' | 'Content' | 'TimeTracker' | 'Settings';
