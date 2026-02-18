@@ -1,0 +1,8 @@
+{
+  "name": "my plans",
+  "description": "Seu ecossistema inteligente de planejamento e produtividade. Organize tarefas, metas e tempo com o poder da IA.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
