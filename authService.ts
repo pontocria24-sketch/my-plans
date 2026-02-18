@@ -4,59 +4,66 @@ import { UserAccount, UserStatus } from './types';
 const USERS_DB_KEY = 'myplans_database_users';
 
 /**
- * URL DA API NA HOSTINGER
- * O Coolify usa o sslip.io por padrão.
+ * URL DA API NA VPS (Confirmada via screenshot do Coolify)
  */
-const API_URL: string = "http://y0c00ckwckwo04w0ocosc4go.145.223.92.165.sslip.io"; 
+const API_BASE: string = "y0c00ckwckwo04w0ocosc4go.145.223.92.165.sslip.io"; 
 
 export const isUsingAPI = () => {
-  return API_URL !== "" && 
-         API_URL !== "COLE_O_LINK_FQDN_DO_COOLIFY_AQUI" && 
-         API_URL.startsWith('http');
+  return API_BASE !== "" && !API_BASE.includes("COLE_O_LINK");
+};
+
+const getFullUrl = (endpoint: string, protocol: 'http://' | 'https://' = 'http://') => {
+  const cleanBase = API_BASE.replace('http://', '').replace('https://', '').replace(/\/$/, '');
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${protocol}${cleanBase}${cleanEndpoint}`;
 };
 
 const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   if (!isUsingAPI()) return null;
-  const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
-  
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
 
-    const response = await fetch(`${baseUrl}${endpoint}`, {
+  // Forçamos HTTP pois o screenshot do Coolify mostra que não há SSL (HTTPS) configurado ainda
+  const url = getFullUrl(endpoint, 'http://');
+  
+  console.log(`[MYPLANS] Tentando conexão externa: ${url}`);
+
+  try {
+    const response = await fetch(url, {
       ...options,
-      signal: controller.signal,
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
         ...options.headers,
       },
     });
-    
-    clearTimeout(timeoutId);
+
+    // Fallback para rotas com prefixo /api caso o backend tenha sido gerado assim
+    if (response.status === 404 && !endpoint.includes('/api')) {
+      const retryUrl = getFullUrl(`/api${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`, 'http://');
+      const retryResponse = await fetch(retryUrl, { ...options, mode: 'cors' });
+      if (retryResponse.ok) return retryResponse.json();
+    }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Erro ${response.status}: O backend está rodando mas o Banco de Dados pode estar inacessível.`);
-    }
-    return response.json();
-  } catch (error: any) {
-    console.error("FALHA DE COMUNICAÇÃO VPS:", error);
-    
-    if (error.name === 'AbortError') {
-      throw new Error("A VPS demorou muito para responder. Verifique se o servidor não está sobrecarregado.");
+      const errorText = await response.text();
+      throw new Error(`Erro ${response.status}: ${errorText}`);
     }
 
-    if (error.message === 'Failed to fetch') {
+    return response.json();
+  } catch (error: any) {
+    console.error("[MYPLANS ERROR]:", error);
+
+    // Se o site principal for HTTPS e a API for HTTP, o navegador vai dar erro de 'Failed to fetch'
+    if (window.location.protocol === 'https:') {
       throw new Error(
-        "NÃO FOI POSSÍVEL CONECTAR À VPS:\n\n" +
-        "1. No Coolify, mude a variável para DATABASE_URL.\n" +
-        "2. Certifique-se de que clicou em 'Redeploy' (e que o deploy não falhou).\n" +
-        "3. Verifique se a VPS tem espaço em disco livre."
+        "BLOQUEIO DE SEGURANÇA (Mixed Content): O navegador impede conexões HTTP dentro de sites HTTPS. " +
+        "PASSO PARA CORRIGIR: Abra o link http://" + API_BASE + " em uma nova aba, aceite o risco se houver, e volte aqui para tentar o login novamente."
       );
     }
-    throw error;
+
+    throw new Error(
+      "VPS NÃO RESPONDE: Verifique se o Firewall da Hostinger permite tráfego na porta 80. " +
+      "Certifique-se de que o DATABASE_URL foi configurado e você deu 'Redeploy'."
+    );
   }
 };
 
@@ -64,9 +71,10 @@ export const db = {
   getUsers: async (): Promise<UserAccount[]> => {
     if (isUsingAPI()) {
       try {
-        return await apiFetch('/admin/users');
+        const data = await apiFetch('/admin/users');
+        if (data) return data;
       } catch (e) {
-        console.warn("API offline, usando dados locais.");
+        console.warn("API Offline, carregando local...");
       }
     }
     const data = localStorage.getItem(USERS_DB_KEY);
@@ -90,27 +98,7 @@ export const db = {
         return { success: false, message: err.message };
       }
     }
-
-    const users = JSON.parse(localStorage.getItem(USERS_DB_KEY) || '[]');
-    if (users.find((u: any) => u.email === email)) {
-      return { success: false, message: 'E-mail já cadastrado localmente.' };
-    }
-
-    const newUser: UserAccount = {
-      id: Date.now().toString(),
-      name,
-      email,
-      password,
-      status: users.length === 0 ? 'Active' : 'Pending',
-      role: users.length === 0 ? 'Admin' : 'User',
-      createdAt: new Date().toISOString()
-    };
-
-    localStorage.setItem(USERS_DB_KEY, JSON.stringify([...users, newUser]));
-    return { 
-      success: true, 
-      message: users.length === 0 ? 'Admin criado!' : 'Cadastro realizado! Aguarde aprovação.' 
-    };
+    return { success: false, message: 'API não configurada.' };
   },
 
   login: async (email: string, password: string): Promise<{ success: boolean, user?: UserAccount, message?: string, status?: UserStatus }> => {
@@ -124,14 +112,7 @@ export const db = {
         return { success: false, message: err.message };
       }
     }
-
-    const users = JSON.parse(localStorage.getItem(USERS_DB_KEY) || '[]');
-    const user = users.find((u: any) => u.email === email && u.password === password);
-
-    if (!user) return { success: false, message: 'E-mail ou senha incorretos.' };
-    if (user.status === 'Pending') return { success: false, message: 'Aguardando aprovação do Admin.', status: 'Pending' };
-    
-    return { success: true, user };
+    return { success: false, message: 'API não configurada.' };
   },
 
   updateUserStatus: async (userId: string, status: UserStatus) => {
@@ -142,12 +123,8 @@ export const db = {
           body: JSON.stringify({ status })
         });
       } catch (e) {
-        console.error("Erro ao atualizar status na VPS");
+        console.error(e);
       }
-    } else {
-      const users = JSON.parse(localStorage.getItem(USERS_DB_KEY) || '[]');
-      const updated = users.map((u: any) => u.id === userId ? { ...u, status } : u);
-      localStorage.setItem(USERS_DB_KEY, JSON.stringify(updated));
     }
   }
 };
