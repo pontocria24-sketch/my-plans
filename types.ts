@@ -55,7 +55,7 @@ export interface Goal {
   unit: string;
   category: string;
   type: GoalType;
-  monthReference: string; // Formato YYYY-MM ou nome do período
+  monthReference: string; 
   isArchived: boolean;
   history?: GoalHistory[];
 }
@@ -75,7 +75,7 @@ export interface ContentScript {
   id: string;
   title: string;
   platform: Platform;
-  format: string; // Novo campo: Reel, Carrossel, Short, etc.
+  format: string; 
   hook: string;
   sceneDirection: string;
   body: string;
@@ -85,7 +85,7 @@ export interface ContentScript {
   date: string;
   startDate?: string;
   endDate?: string;
-  recordingDate?: string; // Novo campo específico
+  recordingDate?: string; 
 }
 
 export type BreakType = 'Coffee' | 'Lunch' | 'Generic';
@@ -111,13 +111,25 @@ export interface UserConfig {
   workStart: string;
   workEnd: string;
   dailyTargetHours: number;
-  workingDays: number[]; // 0-6 (Domingo-Sábado)
-  lunchDuration: number; // minutos
-  coffeeDuration: number; // minutos
-  // Perfil
+  workingDays: number[]; 
+  lunchDuration: number; 
+  coffeeDuration: number; 
   name?: string;
   email?: string;
   avatar?: string;
 }
 
-export type View = 'Dashboard' | 'Tasks' | 'Ideas' | 'Goals' | 'Calendar' | 'Content' | 'TimeTracker' | 'Settings';
+export type UserStatus = 'Pending' | 'Active' | 'Blocked';
+export type UserRole = 'Admin' | 'User';
+
+export interface UserAccount {
+  id: string;
+  email: string;
+  password?: string; // Em uma VPS real, seria um hash
+  name: string;
+  status: UserStatus;
+  role: UserRole;
+  createdAt: string;
+}
+
+export type View = 'Dashboard' | 'Tasks' | 'Ideas' | 'Goals' | 'Calendar' | 'Content' | 'TimeTracker' | 'Settings' | 'AdminUsers';
