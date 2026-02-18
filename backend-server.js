@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -12,42 +11,36 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Servir arquivos estáticos do Frontend (a própria raiz do projeto)
-// Isso permite que o index.html seja acessado diretamente
-app.use(express.static(path.join(__dirname)));
+// --- SERVIR O FRONTEND ---
+// Serve todos os arquivos da pasta raiz (onde o Docker copia o projeto)
+app.use(express.static(__dirname));
 
-// Função para criar conexão dinâmica com o banco
+// --- API DE BANCO DE DADOS ---
+
 const getPool = (creds) => {
   return new Pool({
     user: creds.user || process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    database: creds.database || process.env.DB_NAME || 'myplans',
+    host: creds.host || process.env.DB_HOST || 'localhost',
+    database: creds.database || process.env.DB_NAME || 'postgres',
     password: creds.password || process.env.DB_PASSWORD,
     port: 5432,
   });
 };
 
-// API: Saúde
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'online', message: 'Ecossistema MyPlans Ativo!' });
+  res.json({ status: 'online', mode: 'VPS_UNIFIED', timestamp: new Date() });
 });
 
-// API: Login
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
-  if (email && password) {
-    res.json({
-      id: "usr_vps_1",
-      name: "Admin VPS",
-      email: email,
-      token: "vps_secure_token_" + Date.now()
-    });
-  } else {
-    res.status(401).json({ error: 'Credenciais inválidas' });
-  }
+  res.json({
+    id: "vps_admin",
+    name: "Usuário VPS",
+    email: email,
+    token: "vps_token_" + Date.now()
+  });
 });
 
-// API: Sincronização
 app.post('/api/sync/tasks', async (req, res) => {
   const { tasks, dbCredentials } = req.body;
   const pool = getPool(dbCredentials);
@@ -92,18 +85,18 @@ app.post('/api/sync/tasks', async (req, res) => {
     }
     res.json({ success: true, count: tasks.length });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro no banco', details: err.message });
+    console.error("Erro no DB:", err);
+    res.status(500).json({ error: err.message });
   } finally {
     await pool.end();
   }
 });
 
-// Rota curinga para garantir que o SPA funcione (sempre serve o index.html)
+// Fallback para SPA: Se a rota não for API, serve o index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Ecossistema MyPlans Online na porta ${port}`);
+  console.log(`🚀 Ecossistema MyPlans rodando unificado na porta ${port}`);
 });
