@@ -2,10 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Task, Idea } from "./types";
 
-// Helper to safely get the API KEY from environment
+// Safe check for process and environment variables
 const getApiKey = () => {
   try {
-    return process.env.API_KEY || "";
+    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+      return process.env.API_KEY;
+    }
+    return "";
   } catch (e) {
     return "";
   }
@@ -15,13 +18,13 @@ const apiKey = getApiKey();
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const getAIPrioritySuggestion = async (tasks: Task[]) => {
-  if (!ai) return "Configuração de IA pendente.";
+  if (!ai) return "IA não configurada ou API Key ausente.";
   
   const prompt = `Analyze these tasks and suggest an optimized workflow for today based on priority and deadlines: ${JSON.stringify(tasks)}. Respond with a brief summary and top 3 priorities.`;
   
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
+      model: 'gemini-3-pro-preview',
       contents: prompt,
     });
     return response.text;
@@ -38,7 +41,7 @@ export const convertIdeaToTask = async (idea: Idea) => {
   
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
+      model: 'gemini-3-pro-preview',
       contents: prompt,
       config: { 
         responseMimeType: "application/json",
@@ -51,7 +54,8 @@ export const convertIdeaToTask = async (idea: Idea) => {
               type: Type.ARRAY,
               items: { type: Type.STRING }
             }
-          }
+          },
+          required: ["title", "description"]
         }
       }
     });
