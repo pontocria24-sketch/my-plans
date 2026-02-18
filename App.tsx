@@ -213,9 +213,9 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-950 overflow-hidden text-slate-200">
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-24'} transition-all duration-500 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col z-50`}>
-        <div className="p-6"><AppLogo isOpen={sidebarOpen} /></div>
-        <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} transition-all duration-500 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col z-50`}>
+        <div className="p-4 lg:p-6"><AppLogo isOpen={sidebarOpen} /></div>
+        <nav className="flex-1 px-2 lg:px-4 py-4 space-y-1.5 overflow-y-auto">
           {[
             { id: 'Dashboard', icon: LayoutDashboard, label: 'Geral' },
             { id: 'Tasks', icon: CheckSquare, label: 'Tarefas' },
@@ -228,24 +228,24 @@ const App: React.FC = () => {
             <button 
               key={item.id} 
               onClick={() => setActiveView(item.id as View)} 
-              className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all ${activeView === item.id ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-800/60 hover:text-slate-200'}`}
+              className={`w-full flex items-center gap-3 lg:gap-4 px-3 lg:px-4 py-3 rounded-xl lg:rounded-2xl transition-all ${activeView === item.id ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-800/60 hover:text-slate-200'}`}
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
-              {sidebarOpen && <span className="font-bold text-xs">{item.label}</span>}
+              {sidebarOpen && <span className="font-bold text-[10px] lg:text-xs">{item.label}</span>}
             </button>
           ))}
         </nav>
-        <button onClick={() => { setIsLoggedIn(false); localStorage.removeItem('myplans_auth'); }} className="p-6 text-slate-600 hover:text-rose-500 flex items-center gap-4">
+        <button onClick={() => { setIsLoggedIn(false); localStorage.removeItem('myplans_auth'); }} className="p-4 lg:p-6 text-slate-600 hover:text-rose-500 flex items-center gap-4">
           <Clock className="w-5 h-5" /> {sidebarOpen && <span className="font-black text-[10px] uppercase">Sair</span>}
         </button>
       </aside>
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-20 border-b border-slate-800 bg-slate-900/30 backdrop-blur-md flex items-center justify-between px-8">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2.5 bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all"><Clock className="w-5 h-5" /></button>
+        <header className="h-16 lg:h-20 border-b border-slate-800 bg-slate-900/30 backdrop-blur-md flex items-center justify-between px-4 lg:px-8">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 lg:p-2.5 bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all"><Clock className="w-5 h-5" /></button>
           
           <div className="flex items-center gap-3">
             <span className="hidden md:block text-[10px] font-black uppercase text-slate-500 tracking-widest">{userConfig.name}</span>
-            <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-indigo-400 overflow-hidden shadow-lg">
+            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black text-indigo-400 overflow-hidden shadow-lg">
               {userConfig.avatar ? (
                 <img src={userConfig.avatar} alt="Perfil" className="w-full h-full object-cover" />
               ) : (
@@ -254,7 +254,7 @@ const App: React.FC = () => {
             </div>
           </div>
         </header>
-        <div className="flex-1 overflow-y-auto p-10">{renderContent()}</div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">{renderContent()}</div>
       </main>
     </div>
   );

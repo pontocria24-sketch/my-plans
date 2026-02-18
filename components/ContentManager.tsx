@@ -157,35 +157,35 @@ const ContentManager: React.FC<Props> = ({ scripts, setScripts, tasks, setTasks 
     <div className="max-w-6xl mx-auto space-y-10 pb-24 animate-in fade-in duration-500">
       
       {/* Header Central de Comando */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 px-2">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 lg:gap-6 px-2">
         <div>
-          <h2 className="text-4xl font-black text-white flex items-center gap-4 tracking-tighter uppercase">
-            <div className="p-3 bg-indigo-600 rounded-2xl shadow-2xl shadow-indigo-600/30">
-              <Clapperboard className="text-white w-8 h-8" />
+          <h2 className="text-2xl lg:text-4xl font-black text-white flex items-center gap-3 lg:gap-4 tracking-tighter uppercase">
+            <div className="p-2 lg:p-3 bg-indigo-600 rounded-xl lg:rounded-2xl shadow-2xl shadow-indigo-600/30">
+              <Clapperboard className="text-white w-6 h-6 lg:w-8 lg:h-8" />
             </div>
             Produção & Roteiros
           </h2>
-          <p className="text-slate-500 mt-2 font-medium">Gerencie seus roteiros e acompanhe o status real das postagens.</p>
+          <p className="text-xs lg:text-sm text-slate-500 mt-1.5 lg:mt-2 font-medium">Gerencie seus roteiros e acompanhe o status real das postagens.</p>
         </div>
         <button 
           onClick={() => setIsAdding(true)} 
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all border border-indigo-500/30"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 lg:px-10 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[10px] lg:text-xs uppercase tracking-widest flex items-center gap-2 lg:gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all border border-indigo-500/30"
         >
-          <Plus className="w-5 h-5" /> Novo Roteiro
+          <Plus className="w-4 h-4 lg:w-5 lg:h-5" /> Novo Roteiro
         </button>
       </div>
 
       {/* Dashboard de Publicados (Contagem Real) */}
-      <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-[3rem] space-y-6">
-        <div className="flex items-center gap-3 mb-2">
-           <BarChart3 className="w-5 h-5 text-indigo-400" />
-           <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Postagens Concluídas (Total)</h3>
+      <div className="bg-slate-900/40 border border-slate-800 p-6 lg:p-8 rounded-2xl lg:rounded-[3rem] space-y-4 lg:space-y-6">
+        <div className="flex items-center gap-3 mb-1.5 lg:mb-2">
+           <BarChart3 className="w-4 h-4 lg:w-5 lg:h-5 text-indigo-400" />
+           <h3 className="text-[10px] lg:text-xs font-black text-slate-400 uppercase tracking-widest">Postagens Concluídas (Total)</h3>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
           {CONTENT_FORMATS.map(format => (
-            <div key={format} className="bg-slate-950/60 border border-slate-800 p-5 rounded-3xl flex flex-col items-center justify-center text-center shadow-lg group hover:border-emerald-500/30 transition-all">
-              <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{format}</span>
-              <span className={`text-2xl font-black ${completedCounts[format] > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
+            <div key={format} className="bg-slate-950/60 border border-slate-800 p-4 lg:p-5 rounded-2xl lg:rounded-3xl flex flex-col items-center justify-center text-center shadow-lg group hover:border-emerald-500/30 transition-all">
+              <span className="text-[8px] lg:text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{format}</span>
+              <span className={`text-xl lg:text-2xl font-black ${completedCounts[format] > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
                 {completedCounts[format] || 0}
               </span>
             </div>

@@ -147,47 +147,47 @@ const TimeTracker: React.FC<Props> = ({ workLogs, setWorkLogs, userConfig }) => 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20 animate-in fade-in duration-500">
       {/* Header e Controles de Ação Principal */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
         <div>
-          <h2 className="text-3xl font-black flex items-center gap-4 tracking-tighter uppercase text-white">
-            <div className="p-3 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-600/20">
-              <Timer className="text-white w-7 h-7" />
+          <h2 className="text-2xl lg:text-3xl font-black flex items-center gap-3 lg:gap-4 tracking-tighter uppercase text-white">
+            <div className="p-2 lg:p-3 bg-indigo-600 rounded-xl lg:rounded-2xl shadow-lg shadow-indigo-600/20">
+              <Timer className="text-white w-6 h-6 lg:w-7 lg:h-7" />
             </div>
             Gestão de Ponto
           </h2>
-          <p className="text-slate-500 mt-2 font-medium">Controle seu tempo com precisão estratégica.</p>
+          <p className="text-xs lg:text-sm text-slate-500 mt-1.5 lg:mt-2 font-medium">Controle seu tempo com precisão estratégica.</p>
         </div>
         
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 lg:gap-3">
           {!activeLog ? (
             <button 
               onClick={handleStart}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all border border-indigo-500/30"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 lg:px-10 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[10px] lg:text-xs uppercase tracking-widest flex items-center gap-2 lg:gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all border border-indigo-500/30"
             >
-              <Play className="w-5 h-5 fill-current" /> Iniciar Expediente
+              <Play className="w-4 h-4 lg:w-5 lg:h-5 fill-current" /> Iniciar Expediente
             </button>
           ) : (
             <>
               {activeLog.isOnBreak ? (
                 <button 
                   onClick={() => handleToggleBreak(currentBreakType || 'Generic')}
-                  className="bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 active:scale-95 transition-all shadow-xl shadow-emerald-600/20 border border-emerald-500/30"
+                  className="bg-emerald-600 text-white px-6 lg:px-10 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[10px] lg:text-xs uppercase tracking-widest flex items-center gap-2 lg:gap-3 active:scale-95 transition-all shadow-xl shadow-emerald-600/20 border border-emerald-500/30"
                 >
-                  <RotateCcw className="w-5 h-5" /> Retornar do {currentBreakType === 'Lunch' ? 'Almoço' : 'Café'}
+                  <RotateCcw className="w-4 h-4 lg:w-5 lg:h-5" /> Retornar do {currentBreakType === 'Lunch' ? 'Almoço' : 'Café'}
                 </button>
               ) : (
                 <div className="flex gap-2">
                   <button 
                     onClick={() => handleToggleBreak('Coffee')}
-                    className="bg-slate-900 hover:bg-slate-800 text-amber-400 px-6 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 active:scale-95 transition-all border border-slate-800"
+                    className="bg-slate-900 hover:bg-slate-800 text-amber-400 px-4 lg:px-6 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[9px] lg:text-[10px] uppercase tracking-widest flex items-center gap-2 lg:gap-3 active:scale-95 transition-all border border-slate-800"
                   >
-                    <Coffee className="w-5 h-5" /> Pausa Café
+                    <Coffee className="w-4 h-4 lg:w-5 lg:h-5" /> Pausa Café
                   </button>
                   <button 
                     onClick={() => handleToggleBreak('Lunch')}
-                    className="bg-slate-900 hover:bg-slate-800 text-indigo-400 px-6 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 active:scale-95 transition-all border border-slate-800"
+                    className="bg-slate-900 hover:bg-slate-800 text-indigo-400 px-4 lg:px-6 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[9px] lg:text-[10px] uppercase tracking-widest flex items-center gap-2 lg:gap-3 active:scale-95 transition-all border border-slate-800"
                   >
-                    <Utensils className="w-5 h-5" /> Pausa Almoço
+                    <Utensils className="w-4 h-4 lg:w-5 lg:h-5" /> Pausa Almoço
                   </button>
                 </div>
               )}
@@ -195,15 +195,15 @@ const TimeTracker: React.FC<Props> = ({ workLogs, setWorkLogs, userConfig }) => 
               <div className="flex gap-2">
                 <button 
                   onClick={() => setShowEarlyExitModal(true)}
-                  className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 px-6 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 active:scale-95 transition-all border border-rose-500/20"
+                  className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 px-4 lg:px-6 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[9px] lg:text-[10px] uppercase tracking-widest flex items-center gap-2 lg:gap-3 active:scale-95 transition-all border border-rose-500/20"
                 >
-                  <LogOut className="w-5 h-5" /> Sair Cedo
+                  <LogOut className="w-4 h-4 lg:w-5 lg:h-5" /> Sair Cedo
                 </button>
                 <button 
                   onClick={() => setShowConfirmEndModal(true)}
-                  className="bg-rose-600 hover:bg-rose-700 text-white px-6 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 active:scale-95 transition-all shadow-xl shadow-rose-600/20 border border-rose-500/30"
+                  className="bg-rose-600 hover:bg-rose-700 text-white px-4 lg:px-6 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-black text-[9px] lg:text-[10px] uppercase tracking-widest flex items-center gap-2 lg:gap-3 active:scale-95 transition-all shadow-xl shadow-rose-600/20 border border-rose-500/30"
                 >
-                  <Square className="w-5 h-5 fill-current" /> Encerrar
+                  <Square className="w-4 h-4 lg:w-5 lg:h-5 fill-current" /> Encerrar
                 </button>
               </div>
             </>
@@ -212,36 +212,36 @@ const TimeTracker: React.FC<Props> = ({ workLogs, setWorkLogs, userConfig }) => 
       </div>
 
       {/* Painel Central de Visualização */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className={`lg:col-span-2 bg-slate-900 border ${activeLog?.isOnBreak ? 'border-amber-500/40 shadow-[0_0_40px_rgba(245,158,11,0.05)]' : 'border-slate-800 shadow-2xl'} rounded-[3.5rem] p-12 flex flex-col items-center justify-center text-center space-y-8 relative overflow-hidden transition-all duration-700`}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className={`lg:col-span-2 bg-slate-900 border ${activeLog?.isOnBreak ? 'border-amber-500/40 shadow-[0_0_40px_rgba(245,158,11,0.05)]' : 'border-slate-800 shadow-2xl'} rounded-2xl lg:rounded-[3.5rem] p-6 lg:p-12 flex flex-col items-center justify-center text-center space-y-6 lg:space-y-8 relative overflow-hidden transition-all duration-700`}>
           {activeLog?.isOnBreak && (
-            <div className="absolute top-8 left-1/2 -translate-x-1/2 px-5 py-2 bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-[0.3em] rounded-full animate-pulse shadow-lg">
+            <div className="absolute top-4 lg:top-8 left-1/2 -translate-x-1/2 px-4 lg:px-5 py-1.5 lg:py-2 bg-amber-500 text-slate-950 text-[8px] lg:text-[10px] font-black uppercase tracking-[0.3em] rounded-full animate-pulse shadow-lg">
               Status: Pausa {currentBreakType === 'Lunch' ? 'Almoço' : 'Café'}
             </div>
           )}
           
           <div className="relative">
-             <div className={`absolute -inset-12 ${activeLog?.isOnBreak ? 'bg-amber-500/10' : 'bg-indigo-500/10'} blur-[80px] rounded-full transition-all duration-1000`}></div>
-             <h3 className={`text-9xl font-black tracking-tighter tabular-nums ${activeLog?.isOnBreak ? 'text-amber-400/60' : 'text-white'} drop-shadow-2xl transition-all duration-700 scale-100`}>
+             <div className={`absolute -inset-8 lg:-inset-12 ${activeLog?.isOnBreak ? 'bg-amber-500/10' : 'bg-indigo-500/10'} blur-[60px] lg:blur-[80px] rounded-full transition-all duration-1000`}></div>
+             <h3 className={`text-5xl lg:text-9xl font-black tracking-tighter tabular-nums ${activeLog?.isOnBreak ? 'text-amber-400/60' : 'text-white'} drop-shadow-2xl transition-all duration-700 scale-100`}>
                 {activeLog ? formatTime(elapsed) : "00:00:00"}
              </h3>
           </div>
-          <p className="text-slate-500 font-black uppercase tracking-[0.5em] text-[11px] opacity-80">Tempo de Expediente Ativo</p>
+          <p className="text-slate-500 font-black uppercase tracking-[0.5em] text-[9px] lg:text-[11px] opacity-80">Tempo de Expediente Ativo</p>
         </div>
 
         {/* Card de Rendimento */}
-        <div className="bg-slate-900 border border-slate-800 rounded-[3.5rem] p-10 flex flex-col justify-between shadow-2xl relative overflow-hidden group">
-          <div className="space-y-10 relative z-10">
-            <h4 className="text-xl font-black text-white flex items-center gap-3 tracking-tight">
-              <TrendingUp className="text-indigo-400 w-6 h-6" /> Meta Diária
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl lg:rounded-[3.5rem] p-6 lg:p-10 flex flex-col justify-between shadow-2xl relative overflow-hidden group">
+          <div className="space-y-6 lg:space-y-10 relative z-10">
+            <h4 className="text-lg lg:text-xl font-black text-white flex items-center gap-3 tracking-tight">
+              <TrendingUp className="text-indigo-400 w-5 h-5 lg:w-6 lg:h-6" /> Meta Diária
             </h4>
             
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
                <div className="flex justify-between items-end">
-                  <span className="text-[11px] text-slate-500 font-black uppercase tracking-widest">Aproveitamento</span>
-                  <span className="text-4xl font-black text-indigo-400 tabular-nums">{Math.round(performance)}%</span>
+                  <span className="text-[9px] lg:text-[11px] text-slate-500 font-black uppercase tracking-widest">Aproveitamento</span>
+                  <span className="text-2xl lg:text-4xl font-black text-indigo-400 tabular-nums">{Math.round(performance)}%</span>
                </div>
-               <div className="h-6 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-1 shadow-inner">
+               <div className="h-4 lg:h-6 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-1 shadow-inner">
                   <div 
                     className={`h-full transition-all duration-1000 rounded-full shadow-[0_0_25px_rgba(99,102,241,0.4)] ${performance >= 100 ? 'bg-emerald-500' : 'bg-indigo-600'}`}
                     style={{ width: `${Math.min(100, performance)}%` }}
@@ -249,26 +249,26 @@ const TimeTracker: React.FC<Props> = ({ workLogs, setWorkLogs, userConfig }) => 
                </div>
             </div>
 
-            <div className="bg-slate-950/80 border border-slate-800 p-6 rounded-[2rem] space-y-4">
+            <div className="bg-slate-950/80 border border-slate-800 p-4 lg:p-6 rounded-xl lg:rounded-[2rem] space-y-3 lg:space-y-4">
                {performance >= 100 ? (
-                 <div className="flex items-start gap-4 text-emerald-500">
-                    <CheckCircle2 className="w-6 h-6 shrink-0 mt-0.5" />
-                    <p className="text-xs font-bold leading-relaxed">Jornada concluída! Você atingiu sua meta líquida definida.</p>
+                 <div className="flex items-start gap-3 lg:gap-4 text-emerald-500">
+                    <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6 shrink-0 mt-0.5" />
+                    <p className="text-[10px] lg:text-xs font-bold leading-relaxed">Jornada concluída! Você atingiu sua meta líquida definida.</p>
                  </div>
                ) : (
-                 <div className="flex items-start gap-4 text-amber-500">
-                    <AlertCircle className="w-6 h-6 shrink-0 mt-0.5" />
-                    <p className="text-xs font-bold leading-relaxed">Você está a {targetMs - dailyTotalMs > 0 ? formatTime(targetMs - dailyTotalMs) : '00:00:00'} de completar seu objetivo hoje.</p>
+                 <div className="flex items-start gap-3 lg:gap-4 text-amber-500">
+                    <AlertCircle className="w-5 h-5 lg:w-6 lg:h-6 shrink-0 mt-0.5" />
+                    <p className="text-[10px] lg:text-xs font-bold leading-relaxed">Você está a {targetMs - dailyTotalMs > 0 ? formatTime(targetMs - dailyTotalMs) : '00:00:00'} de completar seu objetivo hoje.</p>
                  </div>
                )}
             </div>
           </div>
 
-          <div className="pt-10 border-t border-slate-800 relative z-10">
+          <div className="pt-6 lg:pt-10 border-t border-slate-800 relative z-10 mt-6 lg:mt-0">
              <div className="flex items-center justify-between">
                 <div>
-                   <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-1">Previsão de Saída</p>
-                   <p className="text-3xl font-black text-slate-200 tabular-nums">
+                   <p className="text-[8px] lg:text-[10px] text-slate-600 font-black uppercase tracking-widest mb-1">Previsão de Saída</p>
+                   <p className="text-xl lg:text-3xl font-black text-slate-200 tabular-nums">
                       {activeLog ? (
                          (() => {
                             const remainingMs = Math.max(0, targetMs - dailyTotalMs);
@@ -278,8 +278,8 @@ const TimeTracker: React.FC<Props> = ({ workLogs, setWorkLogs, userConfig }) => 
                       ) : "--:--"}
                    </p>
                 </div>
-                <div className="p-4 bg-slate-950 rounded-[1.5rem] border border-slate-800 shadow-lg">
-                   <Clock className="w-6 h-6 text-slate-600" />
+                <div className="p-3 lg:p-4 bg-slate-950 rounded-xl lg:rounded-[1.5rem] border border-slate-800 shadow-lg">
+                   <Clock className="w-5 h-5 lg:w-6 lg:h-6 text-slate-600" />
                 </div>
              </div>
           </div>

@@ -185,66 +185,66 @@ const CalendarView: React.FC<Props> = ({ events, setEvents, tasks }) => {
   };
 
   return (
-    <div className="h-[calc(100vh-140px)] flex flex-col bg-slate-900 border border-slate-800 rounded-[3rem] overflow-hidden shadow-2xl animate-in fade-in duration-500">
+    <div className="h-[calc(100vh-100px)] lg:h-[calc(100vh-140px)] flex flex-col bg-slate-900 border border-slate-800 rounded-2xl lg:rounded-[3rem] overflow-hidden shadow-2xl animate-in fade-in duration-500">
       
       {/* HEADER PRINCIPAL */}
-      <header className="px-8 py-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/60 backdrop-blur-xl z-10">
-        <div className="flex items-center gap-10">
-          <div className="flex items-center bg-slate-950/80 rounded-2xl border border-slate-800 p-1 shadow-inner overflow-hidden">
-            <button onClick={handlePrev} className="p-3.5 hover:bg-slate-800 text-slate-400 transition-all active:scale-95"><ChevronLeft className="w-5 h-5" /></button>
-            <div className="w-px h-8 bg-slate-800/50"></div>
-            <button onClick={handleToday} className="px-10 py-2 text-[11px] font-black uppercase tracking-[0.4em] text-white hover:text-indigo-400 transition-all active:scale-95">HOJE</button>
-            <div className="w-px h-8 bg-slate-800/50"></div>
-            <button onClick={handleNext} className="p-3.5 hover:bg-slate-800 text-slate-400 transition-all active:scale-95"><ChevronRight className="w-5 h-5" /></button>
+      <header className="px-4 lg:px-8 py-4 lg:py-6 border-b border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between bg-slate-900/60 backdrop-blur-xl z-10 gap-4 lg:gap-0">
+        <div className="flex items-center gap-4 lg:gap-10 w-full lg:w-auto">
+          <div className="flex items-center bg-slate-950/80 rounded-xl lg:rounded-2xl border border-slate-800 p-1 shadow-inner overflow-hidden">
+            <button onClick={handlePrev} className="p-2 lg:p-3.5 hover:bg-slate-800 text-slate-400 transition-all active:scale-95"><ChevronLeft className="w-4 h-4 lg:w-5 lg:h-5" /></button>
+            <div className="w-px h-6 lg:h-8 bg-slate-800/50"></div>
+            <button onClick={handleToday} className="px-4 lg:px-10 py-1.5 lg:py-2 text-[9px] lg:text-[11px] font-black uppercase tracking-[0.4em] text-white hover:text-indigo-400 transition-all active:scale-95">HOJE</button>
+            <div className="w-px h-6 lg:h-8 bg-slate-800/50"></div>
+            <button onClick={handleNext} className="p-2 lg:p-3.5 hover:bg-slate-800 text-slate-400 transition-all active:scale-95"><ChevronRight className="w-4 h-4 lg:w-5 lg:h-5" /></button>
           </div>
           
-          <div className="flex items-baseline gap-4">
-             <h2 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">
+          <div className="flex items-baseline gap-2 lg:gap-4">
+             <h2 className="text-2xl lg:text-5xl font-black text-white tracking-tighter uppercase leading-none">
                 {viewMode === 'Year' ? 'CALENDÁRIO' : monthNames[currentDate.getMonth()]}
              </h2>
-             <span className="text-3xl font-black text-slate-700 leading-none">{currentDate.getFullYear()}</span>
+             <span className="text-lg lg:text-3xl font-black text-slate-700 leading-none">{currentDate.getFullYear()}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
-          <div className="flex bg-slate-950 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
+        <div className="flex items-center gap-3 lg:gap-6 w-full lg:w-auto overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+          <div className="flex bg-slate-950 p-1 rounded-xl lg:rounded-2xl border border-slate-800 shadow-inner shrink-0">
             {(['Day', 'Week', 'Month', 'Year'] as ViewMode[]).map(mode => (
               <button 
                 key={mode}
                 onClick={() => setViewMode(mode)}
-                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${viewMode === mode ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-600 hover:text-slate-300'}`}
+                className={`px-3 lg:px-6 py-1.5 lg:py-2.5 rounded-lg lg:rounded-xl text-[8px] lg:text-[10px] font-black uppercase tracking-[0.2em] transition-all ${viewMode === mode ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-600 hover:text-slate-300'}`}
               >
                 {mode === 'Day' ? 'DIA' : mode === 'Week' ? 'SEMANA' : mode === 'Month' ? 'MÊS' : 'ANO'}
               </button>
             ))}
           </div>
 
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <div className="relative shrink-0">
+            <Search className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 lg:w-4 lg:h-4 text-slate-500" />
             <input 
               type="text" 
-              placeholder="Buscar compromisso..." 
+              placeholder="Buscar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-slate-950/80 border border-slate-800 rounded-2xl py-3 pl-12 pr-6 text-xs font-bold text-slate-300 outline-none w-56 focus:border-indigo-500/50 transition-all" 
+              className="bg-slate-950/80 border border-slate-800 rounded-xl lg:rounded-2xl py-2 lg:py-3 pl-9 lg:pl-12 pr-4 lg:pr-6 text-[10px] lg:text-xs font-bold text-slate-300 outline-none w-32 lg:w-56 focus:border-indigo-500/50 transition-all" 
             />
           </div>
 
           <button 
             onClick={() => { setIsEditing(false); setFormEvent({ title: '', date: todayStr, time: '12:00', type: 'Work', link: '' }); setShowAddModal(true); }} 
-            className="w-12 h-12 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl shadow-xl active:scale-90 transition-all border border-indigo-500/30"
+            className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl lg:rounded-2xl shadow-xl active:scale-90 transition-all border border-indigo-500/30 shrink-0"
           >
-            <Plus className="w-6 h-6" />
+            <Plus className="w-5 h-5 lg:w-6 lg:h-6" />
           </button>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         {/* SIDEBAR */}
-        <aside className="w-80 md:w-96 border-r border-slate-800 bg-slate-900/40 backdrop-blur-md flex flex-col shrink-0 overflow-y-auto custom-scrollbar">
-          <div className="p-8">
-             <div className="grid grid-cols-7 gap-1 text-center mb-6">
-                {weekDays.map(d => <div key={d} className="text-[9px] font-black text-slate-700">{d.charAt(0)}</div>)}
+        <aside className="w-64 md:w-80 lg:w-96 border-r border-slate-800 bg-slate-900/40 backdrop-blur-md flex flex-col shrink-0 overflow-y-auto custom-scrollbar">
+          <div className="p-4 lg:p-8">
+             <div className="grid grid-cols-7 gap-1 text-center mb-4 lg:mb-6">
+                {weekDays.map(d => <div key={d} className="text-[8px] lg:text-[9px] font-black text-slate-700">{d.charAt(0)}</div>)}
                 {Array.from({ length: firstDayOfMonth(currentDate) }).map((_, i) => <div key={`empty-${i}`} />)}
                 {Array.from({ length: daysInMonth(currentDate) }).map((_, i) => {
                   const day = i + 1;
@@ -257,7 +257,7 @@ const CalendarView: React.FC<Props> = ({ events, setEvents, tasks }) => {
                     <button 
                       key={day}
                       onClick={() => { setSelectedDay(thisDate); setViewMode('Day'); }}
-                      className={`aspect-square text-[10px] font-black rounded-lg transition-all flex flex-col items-center justify-center relative ${
+                      className={`aspect-square text-[9px] lg:text-[10px] font-black rounded-lg transition-all flex flex-col items-center justify-center relative ${
                         isSelected ? 'bg-indigo-600 text-white shadow-lg' : 
                         isToday ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 
                         'text-slate-500 hover:bg-slate-800/50'
@@ -270,36 +270,36 @@ const CalendarView: React.FC<Props> = ({ events, setEvents, tasks }) => {
                 })}
              </div>
 
-             <div className="pt-8 space-y-6">
-                <div className="flex items-end justify-between border-b border-slate-800/60 pb-5">
+             <div className="pt-4 lg:pt-8 space-y-4 lg:space-y-6">
+                <div className="flex items-end justify-between border-b border-slate-800/60 pb-3 lg:pb-5">
                    <div>
-                      <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-1">PROGRAMAÇÃO</h3>
-                      <p className="text-2xl font-black text-white uppercase tracking-tighter">
+                      <h3 className="text-[8px] lg:text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-1">PROGRAMAÇÃO</h3>
+                      <p className="text-lg lg:text-2xl font-black text-white uppercase tracking-tighter">
                          {selectedDay.toLocaleDateString('pt-BR', { weekday: 'long' })}
                       </p>
                    </div>
-                   <span className="text-4xl font-black text-slate-800 leading-none">{selectedDay.getDate()}</span>
+                   <span className="text-2xl lg:text-4xl font-black text-slate-800 leading-none">{selectedDay.getDate()}</span>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 lg:space-y-4">
                    {filteredForSelectedDay.map(item => (
                      <div 
                         key={item.id}
                         onClick={() => setSelectedEvent(item)}
-                        className={`p-5 border rounded-3xl hover:border-indigo-500/30 transition-all cursor-pointer relative overflow-hidden group ${getEventColor(item)} bg-opacity-10`}
+                        className={`p-3 lg:p-5 border rounded-2xl lg:rounded-3xl hover:border-indigo-500/30 transition-all cursor-pointer relative overflow-hidden group ${getEventColor(item)} bg-opacity-10`}
                      >
                         <div className={`absolute left-0 top-0 bottom-0 w-1 ${getEventColor(item).split(' ')[0]} opacity-100`}></div>
-                        <div className="flex justify-between items-start mb-2">
-                           <span className="text-[9px] font-black opacity-60 uppercase tracking-widest">{item.time}</span>
-                           {item.isCompleted ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : <div className={`w-2 h-2 rounded-full ${getEventColor(item).split(' ')[0]}`}></div>}
+                        <div className="flex justify-between items-start mb-1.5 lg:mb-2">
+                           <span className="text-[8px] lg:text-[9px] font-black opacity-60 uppercase tracking-widest">{item.time}</span>
+                           {item.isCompleted ? <CheckCircle2 className="w-2.5 h-2.5 lg:w-3 lg:h-3 text-emerald-500" /> : <div className={`w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full ${getEventColor(item).split(' ')[0]}`}></div>}
                         </div>
-                        <h4 className="font-bold text-sm text-slate-100 group-hover:text-indigo-400 transition-colors uppercase tracking-tight truncate">{item.title}</h4>
+                        <h4 className="font-bold text-xs lg:text-sm text-slate-100 group-hover:text-indigo-400 transition-colors uppercase tracking-tight truncate">{item.title}</h4>
                      </div>
                    ))}
                    {filteredForSelectedDay.length === 0 && (
-                     <div className="py-16 text-center opacity-20 flex flex-col items-center">
-                        <CalendarIcon className="w-8 h-8 mb-4" />
-                        <p className="text-[9px] font-black uppercase tracking-widest">Agenda Livre</p>
+                     <div className="py-10 lg:py-16 text-center opacity-20 flex flex-col items-center">
+                        <CalendarIcon className="w-6 h-6 lg:w-8 lg:h-8 mb-3 lg:mb-4" />
+                        <p className="text-[8px] lg:text-[9px] font-black uppercase tracking-widest">Agenda Livre</p>
                      </div>
                    )}
                 </div>

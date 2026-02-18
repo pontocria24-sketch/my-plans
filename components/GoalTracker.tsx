@@ -118,25 +118,25 @@ const GoalTracker: React.FC<Props> = ({ goals, setGoals }) => {
     <div className="max-w-7xl mx-auto space-y-10 pb-20 animate-in fade-in duration-700">
       
       {/* Header Estratégico */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-slate-900/40 border border-slate-800 p-10 rounded-[3.5rem] relative overflow-hidden backdrop-blur-md shadow-2xl">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-8 bg-slate-900/40 border border-slate-800 p-6 lg:p-10 rounded-3xl lg:rounded-[3.5rem] relative overflow-hidden backdrop-blur-md shadow-2xl">
         <div className="relative z-10 max-w-2xl">
-          <div className="flex items-center gap-3 mb-4">
-             <div className="p-2 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
-                <Target className="w-6 h-6 text-indigo-400" />
+          <div className="flex items-center gap-3 mb-3 lg:mb-4">
+             <div className="p-1.5 lg:p-2 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
+                <Target className="w-5 h-5 lg:w-6 lg:h-6 text-indigo-400" />
              </div>
-             <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Gestão de Resultados</span>
+             <span className="text-[8px] lg:text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Gestão de Resultados</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4 uppercase">Diretrizes & Marcos</h2>
-          <p className="text-slate-500 font-medium leading-relaxed">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl font-black text-white tracking-tighter mb-3 lg:mb-4 uppercase">Diretrizes & Marcos</h2>
+          <p className="text-xs lg:text-sm text-slate-500 font-medium leading-relaxed">
             As metas expiram e são arquivadas automaticamente. <span className="text-indigo-400">Clique em um card</span> para auditar todas as evoluções e registros históricos.
           </p>
         </div>
         
         <button 
           onClick={() => setShowModal(true)}
-          className="relative z-10 bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-4 shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all border border-indigo-500/30"
+          className="relative z-10 bg-indigo-600 hover:bg-indigo-700 text-white px-6 lg:px-10 py-3 lg:py-5 rounded-2xl lg:rounded-3xl font-black text-[10px] lg:text-xs uppercase tracking-[0.2em] flex items-center gap-3 lg:gap-4 shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all border border-indigo-500/30"
         >
-          Nova Meta <Plus className="w-5 h-5" />
+          Nova Meta <Plus className="w-4 h-4 lg:w-5 lg:h-5" />
         </button>
 
         <div className="absolute top-[-20%] right-[-5%] opacity-5 pointer-events-none">
@@ -165,7 +165,7 @@ const GoalTracker: React.FC<Props> = ({ goals, setGoals }) => {
       </div>
 
       {/* Grid de Metas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
         {currentList.map(goal => {
           const progress = Math.min(100, (goal.currentValue / goal.targetValue) * 100);
           const isExpired = goal.targetDate < today;
@@ -176,73 +176,73 @@ const GoalTracker: React.FC<Props> = ({ goals, setGoals }) => {
             <div 
               key={goal.id} 
               onClick={() => !isUpdating && setSelectedAuditGoal(goal)}
-              className={`bg-slate-900/30 border border-slate-800/80 p-8 rounded-[3rem] transition-all flex flex-col group relative overflow-hidden cursor-pointer ${isExpired ? 'opacity-70 grayscale-[0.2] hover:grayscale-0' : 'hover:border-indigo-500/40 hover:bg-slate-900/50 shadow-xl'}`}
+              className={`bg-slate-900/30 border border-slate-800/80 p-6 lg:p-8 rounded-2xl lg:rounded-[3rem] transition-all flex flex-col group relative overflow-hidden cursor-pointer ${isExpired ? 'opacity-70 grayscale-[0.2] hover:grayscale-0' : 'hover:border-indigo-500/40 hover:bg-slate-900/50 shadow-xl'}`}
             >
-              <div className="flex justify-between items-start mb-8">
-                <div className="space-y-3">
+              <div className="flex justify-between items-start mb-6 lg:mb-8">
+                <div className="space-y-2 lg:space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border ${goal.type === 'Yearly' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'}`}>
+                    <span className={`text-[7px] lg:text-[8px] font-black uppercase tracking-widest px-2 lg:px-3 py-0.5 lg:py-1 rounded-lg border ${goal.type === 'Yearly' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'}`}>
                       {goal.type === 'Monthly' ? 'Mensal' : goal.type === 'Yearly' ? 'Anual' : 'Personalizado'}
                     </span>
-                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-950 px-3 py-1 rounded-lg border border-slate-800">
+                    <span className="text-[7px] lg:text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-950 px-2 lg:px-3 py-0.5 lg:py-1 rounded-lg border border-slate-800">
                       {goal.category}
                     </span>
                   </div>
-                  <h4 className="text-2xl font-black text-white group-hover:text-indigo-400 transition-colors leading-tight uppercase tracking-tighter">{goal.title}</h4>
+                  <h4 className="text-xl lg:text-2xl font-black text-white group-hover:text-indigo-400 transition-colors leading-tight uppercase tracking-tighter">{goal.title}</h4>
                 </div>
                 {isCompleted ? (
-                   <CheckCircle2 className="w-8 h-8 text-emerald-500 shadow-lg" />
+                   <CheckCircle2 className="w-6 h-6 lg:w-8 lg:h-8 text-emerald-500 shadow-lg" />
                 ) : isExpired ? (
-                   <AlertCircle className="w-8 h-8 text-rose-500 shadow-lg" />
+                   <AlertCircle className="w-6 h-6 lg:w-8 lg:h-8 text-rose-500 shadow-lg" />
                 ) : (
-                   <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800">
-                      <TrendingUp className="w-5 h-5 text-indigo-500" />
+                   <div className="p-2 lg:p-3 bg-slate-950 rounded-xl lg:rounded-2xl border border-slate-800">
+                      <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-indigo-500" />
                    </div>
                 )}
               </div>
 
-              <div className="flex-1 space-y-8">
+              <div className="flex-1 space-y-6 lg:space-y-8">
                 <div className="flex justify-between items-end">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aproveitamento</p>
-                    <p className={`text-4xl font-black tabular-nums ${isCompleted ? 'text-emerald-400' : 'text-white'}`}>{Math.round(progress)}%</p>
+                    <p className="text-[8px] lg:text-[10px] font-black text-slate-500 uppercase tracking-widest">Aproveitamento</p>
+                    <p className={`text-2xl lg:text-4xl font-black tabular-nums ${isCompleted ? 'text-emerald-400' : 'text-white'}`}>{Math.round(progress)}%</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Período</p>
-                    <div className="flex items-center gap-2 text-slate-300 font-bold text-[10px] uppercase tracking-tighter bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
-                      <CalendarDays className="w-3.5 h-3.5 text-indigo-500" />
+                    <p className="text-[8px] lg:text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Período</p>
+                    <div className="flex items-center gap-1.5 lg:gap-2 text-slate-300 font-bold text-[8px] lg:text-[10px] uppercase tracking-tighter bg-slate-950 px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg lg:rounded-xl border border-slate-800">
+                      <CalendarDays className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-indigo-500" />
                       {new Date(goal.startDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} - {new Date(goal.targetDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                   <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800 shadow-inner">
+                <div className="space-y-2 lg:space-y-3">
+                   <div className="w-full bg-slate-950 h-2 lg:h-3 rounded-full overflow-hidden border border-slate-800 shadow-inner">
                      <div 
                         className={`h-full transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(99,102,241,0.3)] ${isCompleted ? 'bg-emerald-500 shadow-emerald-500/40' : 'bg-indigo-600'}`} 
                         style={{ width: `${progress}%` }}
                      ></div>
                    </div>
-                   <div className="flex justify-between items-center text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">
+                   <div className="flex justify-between items-center text-[8px] lg:text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">
                       <span>Atual: {goal.currentValue} {goal.unit}</span>
                       <span>Alvo: {goal.targetValue} {goal.unit}</span>
                    </div>
                 </div>
 
-                <div className="bg-slate-950/60 p-5 rounded-[2rem] border border-slate-800/80 flex items-center justify-between shadow-inner">
-                   <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800">
-                         <Hourglass className={`w-4 h-4 ${isExpired ? 'text-rose-500' : 'text-amber-500'}`} />
+                <div className="bg-slate-950/60 p-4 lg:p-5 rounded-2xl lg:rounded-[2rem] border border-slate-800/80 flex items-center justify-between shadow-inner">
+                   <div className="flex items-center gap-2 lg:gap-3">
+                      <div className="w-8 h-8 lg:w-10 lg:h-10 bg-slate-900 rounded-lg lg:rounded-xl flex items-center justify-center border border-slate-800">
+                         <Hourglass className={`w-3.5 h-3.5 lg:w-4 lg:h-4 ${isExpired ? 'text-rose-500' : 'text-amber-500'}`} />
                       </div>
                       <div>
-                         <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Tempo</p>
-                         <p className="text-xs font-bold text-slate-300">
+                         <p className="text-[8px] lg:text-[9px] font-black text-slate-600 uppercase tracking-widest">Tempo</p>
+                         <p className="text-[10px] lg:text-xs font-bold text-slate-300">
                             {isExpired ? 'Período Encerrado' : `${Math.ceil((new Date(goal.targetDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24))} dias restantes`}
                          </p>
                       </div>
                    </div>
-                   <span className="text-sm font-black text-white tabular-nums">
-                      {goal.currentValue}<span className="text-[10px] text-slate-500 font-bold ml-1 uppercase">{goal.unit}</span>
+                   <span className="text-xs lg:text-sm font-black text-white tabular-nums">
+                      {goal.currentValue}<span className="text-[8px] lg:text-[10px] text-slate-500 font-bold ml-1 uppercase">{goal.unit}</span>
                    </span>
                 </div>
               </div>
