@@ -33,27 +33,43 @@ app.get(/\.(ts|tsx)$/, (req, res, next) => {
   next();
 });
 
-// --- LÓGICA DE BANCO DE DADOS ---
+// --- LÓGICA DE BANCO DE DADOS (CORREÇÃO SSL) ---
 let pool = null;
 if (DATABASE_URL) {
-  console.log('[MYPLANS] Configurando conexão PostgreSQL...');
-  // Tenta detectar se precisa de SSL ou não
-  const useSSL = !DATABASE_URL.includes('sslmode=disable');
-  pool = new Pool({ 
+  console.log('[MYPLANS] Iniciando conexão com o banco de dados...');
+  
+  const poolConfig = {
     connectionString: DATABASE_URL,
-    ssl: useSSL ? { rejectUnauthorized: false } : false,
-    connectionTimeoutMillis: 5000 // 5 segundos para falhar se não conectar
-  });
+    connectionTimeoutMillis: 5000
+  };
+
+  // Lógica de SSL: Desativa por padrão para VPS, ativa apenas se solicitado na URL
+  const needsSSL = DATABASE_URL.includes('sslmode=require') || DATABASE_URL.includes('ssl=true');
+  
+  if (needsSSL) {
+    poolConfig.ssl = { rejectUnauthorized: false };
+    console.log('[MYPLANS] SSL Ativado para a conexão.');
+  } else {
+    poolConfig.ssl = false;
+    console.log('[MYPLANS] Conectando sem SSL (Padrão VPS).');
+  }
+
+  pool = new Pool(poolConfig);
   
   const initDb = async () => {
     try {
+      // Testa a conexão antes de criar as tabelas
+      const client = await pool.connect();
+      console.log('[MYPLANS] Conexão física estabelecida com sucesso.');
+      client.release();
+
       await pool.query(`
         CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT, email TEXT UNIQUE, password TEXT, data JSONB DEFAULT '{}');
         CREATE TABLE IF NOT EXISTS storage (user_id TEXT, key TEXT, data JSONB, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (user_id, key));
       `);
-      console.log('[MYPLANS] PostgreSQL Pronto e Tabelas Verificadas.');
+      console.log('[MYPLANS] Tabelas verificadas/criadas no PostgreSQL.');
     } catch (err) {
-      console.error('[MYPLANS] ERRO CRÍTICO NO BANCO:', err.message);
+      console.error('[MYPLANS] ERRO AO CONECTAR NO BANCO:', err.message);
     }
   };
   initDb();
@@ -82,12 +98,11 @@ app.get('/api/sync/:userId/:key', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    if (!pool) throw new Error("Servidor sem banco de dados (DATABASE_URL ausente)");
+    if (!pool) throw new Error("Servidor sem banco de dados configurado");
     const result = await pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', [email, password]);
     if (result.rows.length > 0) return res.json({ success: true, user: result.rows[0] });
     res.status(401).json({ success: false, message: 'E-mail ou senha incorretos' });
   } catch (error) { 
-    console.error('Login error:', error.message);
     res.status(500).json({ success: false, error: error.message }); 
   }
 });
@@ -96,7 +111,7 @@ app.post('/api/auth/register', async (req, res) => {
   const { name, email, password } = req.body;
   const userId = Date.now().toString();
   try {
-    if (!pool) throw new Error("Servidor sem banco de dados");
+    if (!pool) throw new Error("Servidor sem banco de dados configurado");
     await pool.query('INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)', [userId, name, email, password]);
     res.json({ success: true, user: { id: userId, name, email } });
   } catch (error) { 
