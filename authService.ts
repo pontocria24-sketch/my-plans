@@ -1,10 +1,6 @@
 
 import { UserAccount, UserStatus, Task, Idea, Goal, Event, WorkLog, UserConfig } from './types';
 
-/**
- * No diretório unificado, não precisamos de URL absoluta.
- * O navegador chamará o mesmo servidor que entregou o frontend.
- */
 const apiRequest = async (endpoint: string, method: string = 'GET', data?: any) => {
   try {
     const response = await fetch(endpoint, {
@@ -13,11 +9,12 @@ const apiRequest = async (endpoint: string, method: string = 'GET', data?: any) 
       body: data ? JSON.stringify(data) : undefined,
     });
     
-    if (!response.ok) return null;
-    return await response.json();
+    const result = await response.json();
+    if (!response.ok) return { success: false, error: result.error || result.message || 'Erro desconhecido' };
+    return result;
   } catch (e) {
     console.error(`[API ERROR] Falha ao acessar ${endpoint}`);
-    return null;
+    return { success: false, error: 'Não foi possível conectar ao servidor.' };
   }
 };
 
@@ -31,7 +28,6 @@ export const db = {
   },
 
   pushData: async (userId: string, key: string, data: any) => {
-    // Espelhamento preventivo no LocalStorage
     localStorage.setItem(`myplans_mirror_${key}`, JSON.stringify(data));
     return await apiRequest(`/api/sync/${userId}/${key}`, 'POST', { data });
   },
@@ -42,11 +38,5 @@ export const db = {
     
     const local = localStorage.getItem(`myplans_mirror_${key}`);
     return local ? JSON.parse(local) : fallback;
-  },
-
-  // Mock para administração se necessário
-  getUsers: async () => {
-    const res = await apiRequest('/api/admin/users', 'GET');
-    return res || [];
   }
 };

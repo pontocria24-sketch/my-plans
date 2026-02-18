@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Lightbulb, Target, Calendar, 
   Video, Settings as SettingsIcon, Timer, Rocket, Clock, 
-  Lock, User, ArrowRight, ShieldCheck
+  Lock, User, ArrowRight, ShieldCheck, UserPlus
 } from 'lucide-react';
 import { View, Task, Idea, Goal, Event, ContentScript, WorkLog, UserConfig } from './types.ts';
 import Dashboard from './components/Dashboard.tsx';
@@ -44,10 +44,15 @@ const AppLogo: React.FC<{ isOpen: boolean }> = ({ isOpen }) => (
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('myplans_auth') === 'true');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [activeView, setActiveView] = useState<View>('Dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  
+  // States do formulário
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [ideas, setIdeas] = useState<Idea[]>([]);
@@ -64,10 +69,9 @@ const App: React.FC = () => {
     workingDays: [1, 2, 3, 4, 5]
   }));
 
-  // Carregar dados iniciais da VPS ao logar
   useEffect(() => {
     if (isLoggedIn) {
-      const userId = "master_user"; // Simplificado para versão unificada
+      const userId = localStorage.getItem('myplans_userid') || "master_user";
       db.pullData(userId, 'tasks', []).then(setTasks);
       db.pullData(userId, 'ideas', []).then(setIdeas);
       db.pullData(userId, 'goals', []).then(setGoals);
@@ -77,10 +81,9 @@ const App: React.FC = () => {
     }
   }, [isLoggedIn]);
 
-  // Sincronização automática com VPS ao alterar estados
   useEffect(() => {
     if (isLoggedIn) {
-      const userId = "master_user";
+      const userId = localStorage.getItem('myplans_userid') || "master_user";
       const timer = setTimeout(() => {
         db.pushData(userId, 'tasks', tasks);
         db.pushData(userId, 'ideas', ideas);
@@ -94,47 +97,81 @@ const App: React.FC = () => {
     }
   }, [tasks, ideas, goals, events, scripts, workLogs, userConfig, isLoggedIn]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await db.login(loginEmail, loginPassword);
-    if (res && res.success) {
-      setIsLoggedIn(true);
-      localStorage.setItem('myplans_auth', 'true');
+    setIsLoading(true);
+    
+    if (authMode === 'login') {
+      const res = await db.login(email, password);
+      if (res && res.success) {
+        localStorage.setItem('myplans_auth', 'true');
+        localStorage.setItem('myplans_userid', res.user.id);
+        setIsLoggedIn(true);
+      } else {
+        alert(res?.error || "Erro de credenciais ou conexão.");
+      }
     } else {
-      alert("Erro ao conectar com o banco de dados da VPS. Verifique se o server.js está rodando.");
+      const res = await db.register(name, email, password);
+      if (res && res.success) {
+        alert("Conta criada com sucesso! Faça login agora.");
+        setAuthMode('login');
+      } else {
+        alert(res?.error || "Erro ao criar conta.");
+      }
     }
+    setIsLoading(false);
   };
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 relative overflow-hidden text-white">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px]"></div>
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
           <div className="flex flex-col items-center mb-10">
             <AppLogo isOpen={true} />
-            <p className="text-slate-500 mt-4 font-medium text-center italic">Gerencie suas tarefas com prioridade máxima.</p>
+            <p className="text-slate-500 mt-4 font-medium text-center italic">Ecossistema de produtividade em tempo real.</p>
           </div>
           <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
             <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-8 flex items-center gap-3">
-              <Lock className="w-5 h-5 text-indigo-400" /> Dashboard VPS
+              {authMode === 'login' ? <Lock className="w-5 h-5 text-indigo-400" /> : <UserPlus className="w-5 h-5 text-indigo-400" />} 
+              {authMode === 'login' ? 'Acesso VPS' : 'Criar Conta VPS'}
             </h2>
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleAuth} className="space-y-6">
+              {authMode === 'register' && (
+                <input 
+                  type="text" required placeholder="Nome Completo"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 px-6 text-white font-bold outline-none focus:border-indigo-500"
+                  value={name} onChange={(e) => setName(e.target.value)}
+                />
+              )}
               <input 
                 type="email" required placeholder="E-mail"
                 className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 px-6 text-white font-bold outline-none focus:border-indigo-500"
-                value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)}
+                value={email} onChange={(e) => setEmail(e.target.value)}
               />
               <input 
                 type="password" required placeholder="Senha"
                 className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 px-6 text-white font-bold outline-none focus:border-indigo-500"
-                value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)}
+                value={password} onChange={(e) => setPassword(e.target.value)}
               />
-              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all">
-                Entrar no Sistema
+              <button 
+                type="submit" disabled={isLoading}
+                className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
+              >
+                {isLoading ? 'Conectando...' : (authMode === 'login' ? 'Entrar no Sistema' : 'Cadastrar agora')}
               </button>
             </form>
-            <p className="text-[10px] text-slate-600 mt-6 text-center uppercase font-black tracking-widest">Acesso Restrito à VPS</p>
+            
+            <div className="mt-8 text-center">
+              <button 
+                onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                className="text-xs font-black uppercase text-indigo-400 hover:text-white transition-colors tracking-widest"
+              >
+                {authMode === 'login' ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça Login'}
+              </button>
+            </div>
           </div>
+          <p className="text-[10px] text-slate-600 mt-6 text-center uppercase font-black tracking-widest">Banco de Dados: PostgreSQL</p>
         </div>
       </div>
     );
