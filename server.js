@@ -4,23 +4,43 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
+const { transform } = require('sucrase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DB_FILE = path.join(__dirname, 'database.json');
 const DATABASE_URL = process.env.DATABASE_URL;
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// --- CORREÇÃO DE MIME TYPES PARA .TS e .TSX ---
-// Isso impede a tela preta pois o navegador passa a aceitar os arquivos como scripts
-express.static.mime.define({'application/javascript': ['ts', 'tsx']});
+// --- MIDDLEWARE DE TRANSPILAÇÃO (CORREÇÃO TELA PRETA) ---
+// Este bloco intercepta arquivos .ts e .tsx e os traduz para JS antes de enviar ao navegador
+app.get(/\.(ts|tsx)$/, (req, res, next) => {
+  const filePath = path.join(__dirname, req.path);
+  
+  if (fs.existsSync(filePath)) {
+    try {
+      const code = fs.readFileSync(filePath, 'utf8');
+      // Transpilação ultra-rápida: remove tipos e converte JSX
+      const result = transform(code, {
+        transforms: ['typescript', 'jsx'],
+        production: true,
+        jsxRuntime: 'classic' // Compatível com o React 19 importado via CDN
+      });
+      
+      res.set('Content-Type', 'application/javascript');
+      return res.send(result.code);
+    } catch (err) {
+      console.error(`Erro ao transpilar ${req.path}:`, err);
+      return res.status(500).send('Erro na transpilação do arquivo.');
+    }
+  }
+  next();
+});
 
-// --- LÓGICA DE PERSISTÊNCIA (POSTGRES OU JSON) ---
+// --- LÓGICA DE BANCO DE DADOS ---
 let pool = null;
 if (DATABASE_URL) {
-  console.log('[MYPLANS] Conectando ao PostgreSQL do Coolify...');
   pool = new Pool({ 
     connectionString: DATABASE_URL,
     ssl: DATABASE_URL.includes('sslmode=disable') ? false : { rejectUnauthorized: false }
@@ -29,54 +49,27 @@ if (DATABASE_URL) {
   const initDb = async () => {
     try {
       await pool.query(`
-        CREATE TABLE IF NOT EXISTS users (
-          id TEXT PRIMARY KEY,
-          name TEXT,
-          email TEXT UNIQUE,
-          password TEXT,
-          data JSONB DEFAULT '{}'
-        );
-        CREATE TABLE IF NOT EXISTS storage (
-          user_id TEXT,
-          key TEXT,
-          data JSONB,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          PRIMARY KEY (user_id, key)
-        );
+        CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT, email TEXT UNIQUE, password TEXT, data JSONB DEFAULT '{}');
+        CREATE TABLE IF NOT EXISTS storage (user_id TEXT, key TEXT, data JSONB, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (user_id, key));
       `);
-      console.log('[MYPLANS] Tabelas PostgreSQL verificadas/criadas.');
+      console.log('[MYPLANS] PostgreSQL Pronto.');
     } catch (err) {
-      console.error('[MYPLANS] Erro ao iniciar PostgreSQL:', err.message);
+      console.error('[MYPLANS] Erro DB:', err.message);
     }
   };
   initDb();
-} else {
-  console.log('[MYPLANS] Usando armazenamento em arquivo JSON local.');
-  if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify({ users: [], storage: {} }, null, 2));
-  }
 }
 
-// --- API: Sincronização de Dados ---
+// --- API ---
 app.post('/api/sync/:userId/:key', async (req, res) => {
   const { userId, key } = req.params;
   const { data } = req.body;
   try {
     if (pool) {
-      await pool.query(
-        'INSERT INTO storage (user_id, key, data, updated_at) VALUES ($1, $2, $3, NOW()) ON CONFLICT (user_id, key) DO UPDATE SET data = $3, updated_at = NOW()',
-        [userId, key, JSON.stringify(data)]
-      );
-    } else {
-      const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-      if (!db.storage[userId]) db.storage[userId] = {};
-      db.storage[userId][key] = data;
-      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+      await pool.query('INSERT INTO storage (user_id, key, data, updated_at) VALUES ($1, $2, $3, NOW()) ON CONFLICT (user_id, key) DO UPDATE SET data = $3, updated_at = NOW()', [userId, key, JSON.stringify(data)]);
     }
     res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+  } catch (error) { res.status(500).json({ success: false }); }
 });
 
 app.get('/api/sync/:userId/:key', async (req, res) => {
@@ -85,13 +78,8 @@ app.get('/api/sync/:userId/:key', async (req, res) => {
     if (pool) {
       const result = await pool.query('SELECT data FROM storage WHERE user_id = $1 AND key = $2', [userId, key]);
       res.json({ data: result.rows[0]?.data || null });
-    } else {
-      const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-      res.json({ data: db.storage[userId]?.[key] || null });
     }
-  } catch (error) {
-    res.status(500).json({ success: false });
-  }
+  } catch (error) { res.status(500).json({ success: false }); }
 });
 
 app.post('/api/auth/login', async (req, res) => {
@@ -100,15 +88,9 @@ app.post('/api/auth/login', async (req, res) => {
     if (pool) {
       const result = await pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', [email, password]);
       if (result.rows.length > 0) return res.json({ success: true, user: result.rows[0] });
-    } else {
-      const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-      const user = db.users.find(u => u.email === email && u.password === password);
-      if (user) return res.json({ success: true, user });
     }
-    res.status(401).json({ success: false, message: 'Credenciais inválidas' });
-  } catch (error) {
-    res.status(500).json({ success: false });
-  }
+    res.status(401).json({ success: false });
+  } catch (error) { res.status(500).json({ success: false }); }
 });
 
 app.post('/api/auth/register', async (req, res) => {
@@ -118,26 +100,11 @@ app.post('/api/auth/register', async (req, res) => {
     if (pool) {
       await pool.query('INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)', [userId, name, email, password]);
       res.json({ success: true, user: { id: userId, name, email } });
-    } else {
-      const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-      if (db.users.find(u => u.email === email)) return res.status(400).json({ success: false, message: 'Usuário já existe' });
-      const newUser = { id: userId, name, email, password, role: 'User', status: 'Active', createdAt: new Date().toISOString() };
-      db.users.push(newUser);
-      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
-      res.json({ success: true, user: newUser });
     }
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+  } catch (error) { res.status(500).json({ success: false }); }
 });
 
-// Servir arquivos estáticos (com MIME type corrigido acima)
 app.use(express.static(__dirname));
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`[MYPLANS SERVER] Rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`[MYPLANS] Rodando na porta ${PORT}`));
