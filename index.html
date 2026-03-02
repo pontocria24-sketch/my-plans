@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      body { font-family: 'Inter', sans-serif; background-color: #020617; margin: 0; }
+      body { font-family: 'Inter', sans-serif; margin: 0; }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
@@ -25,13 +25,16 @@
     "lucide-react": "https://esm.sh/lucide-react@0.474.0",
     "recharts": "https://esm.sh/recharts@2.15.0",
     "@google/genai": "https://esm.sh/@google/genai@1.41.0",
+    "@dnd-kit/core": "https://esm.sh/@dnd-kit/core@6.3.1",
+    "@dnd-kit/sortable": "https://esm.sh/@dnd-kit/sortable@8.0.0",
+    "@dnd-kit/utilities": "https://esm.sh/@dnd-kit/utilities@3.2.2",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
   </head>
-  <body class="bg-slate-950 text-slate-100 overflow-x-hidden">
+  <body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-500">
     <div id="root"></div>
     <!-- Carregado como módulo padrão. O servidor cuidará do TypeScript -->
     <script type="module" src="./index.tsx"></script>

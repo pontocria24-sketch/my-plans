@@ -1,6 +1,6 @@
 
 export type Priority = 'Urgent' | 'High' | 'Medium' | 'Low';
-export type Status = 'Pending' | 'InProgress' | 'Paused' | 'AwaitingPost' | 'Completed';
+export type Status = string; // Tornando flexível para novos quadros
 export type Platform = 'Instagram' | 'YouTube' | 'TikTok';
 export type RecurringInterval = 'Daily' | 'Weekly' | 'Monthly' | 'None';
 export type GoalType = 'Monthly' | 'Yearly' | 'Custom';
