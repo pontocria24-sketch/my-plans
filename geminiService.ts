@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { Task, Idea } from "./types";
+import { Task, Idea } from "./types.ts";
 
 // Safe check for process and environment variables
 const getApiKey = () => {

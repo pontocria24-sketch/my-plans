@@ -13,7 +13,7 @@ import {
   AlertTriangle,
   X
 } from 'lucide-react';
-import { Idea, Task, Priority } from '../types';
+import { Idea, Task, Priority } from '../types.ts';
 
 interface Props {
   ideas: Idea[];

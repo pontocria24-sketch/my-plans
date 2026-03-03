@@ -21,7 +21,7 @@ import {
   Link as LinkIcon,
   Circle
 } from 'lucide-react';
-import { Event, Task } from '../types';
+import { Event, Task } from '../types.ts';
 
 interface Props {
   events: Event[];

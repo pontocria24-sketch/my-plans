@@ -8,7 +8,7 @@ import {
   Eye, Save, ArrowRight, Share2, BarChart3, Layout, Layers, Type,
   Printer, Download, FileCheck, AlertCircle
 } from 'lucide-react';
-import { ContentScript, Platform, Task } from '../types';
+import { ContentScript, Platform, Task } from '../types.ts';
 
 interface Props {
   scripts: ContentScript[];

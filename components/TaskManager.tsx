@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { 
   Plus, Search, Calendar, Trash2, X, CheckSquare, Zap, GripVertical
 } from 'lucide-react';
-import { Task, Priority, Status } from '../types';
+import { Task, Priority, Status } from '../types.ts';
 import {
   DndContext, 
   closestCorners,

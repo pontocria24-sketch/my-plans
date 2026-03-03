@@ -6,7 +6,7 @@ import {
   ChevronRight, Clock, Info, X, FileText, History, ArrowRight, Share2,
   Save, MessageSquareText, Check
 } from 'lucide-react';
-import { WorkLog, UserConfig, BreakType, WorkBreak } from '../types';
+import { WorkLog, UserConfig, BreakType, WorkBreak } from '../types.ts';
 
 interface Props {
   workLogs: WorkLog[];

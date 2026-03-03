@@ -237,7 +237,7 @@ const App: React.FC = () => {
     <div className="flex h-screen bg-white dark:bg-slate-950 overflow-hidden text-slate-900 dark:text-slate-200 transition-colors duration-300">
       <aside className={`fixed inset-y-0 left-0 z-50 transform ${sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0 lg:w-20'} transition-all duration-500 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 backdrop-blur-xl flex flex-col`}>
         <div className="p-4 lg:p-6 flex items-center justify-between">
-          <AppLogo isOpen={sidebarOpen || !sidebarOpen} />
+          <AppLogo isOpen={sidebarOpen} />
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-2 text-slate-500">
             <X className="w-5 h-5" />
           </button>

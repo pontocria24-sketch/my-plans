@@ -20,7 +20,7 @@ import {
   ChevronLeft,
   ChevronUp
 } from 'lucide-react';
-import { Goal, GoalType, GoalHistory } from '../types';
+import { Goal, GoalType, GoalHistory } from '../types.ts';
 
 interface Props {
   goals: Goal[];

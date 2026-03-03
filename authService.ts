@@ -1,5 +1,5 @@
 
-import { UserAccount, UserStatus, Task, Idea, Goal, Event, WorkLog, UserConfig } from './types';
+import { UserAccount, UserStatus, Task, Idea, Goal, Event, WorkLog, UserConfig } from './types.ts';
 
 const apiRequest = async (endpoint: string, method: string = 'GET', data?: any) => {
   try {

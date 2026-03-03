@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { UserConfig } from '../types';
+import { UserConfig } from '../types.ts';
 import { 
   Settings as SettingsIcon, 
   Clock, 

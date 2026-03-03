@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { Task, Goal, Event, WorkLog, UserConfig } from '../types';
+import { Task, Goal, Event, WorkLog, UserConfig } from '../types.ts';
 import { 
   Clock, TrendingUp, AlertCircle, Timer, Target, ArrowUpRight, 
   ArrowDownRight, CalendarDays, History, Hourglass, Calendar as CalendarIcon,
