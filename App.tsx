@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Lightbulb, Target, Calendar, 
   Video, Settings as SettingsIcon, Timer, Rocket, Clock, 
-  Lock, User, ArrowRight, ShieldCheck, UserPlus, Moon, Sun
+  Lock, User, ArrowRight, ShieldCheck, UserPlus, Moon, Sun, X
 } from 'lucide-react';
 import { View, Task, Idea, Goal, Event, ContentScript, WorkLog, UserConfig } from './types.ts';
 import Dashboard from './components/Dashboard.tsx';
@@ -250,6 +250,7 @@ const App: React.FC = () => {
             { id: 'Ideas', icon: Lightbulb, label: 'Ideias' },
             { id: 'Goals', icon: Target, label: 'Metas' },
             { id: 'Calendar', icon: Calendar, label: 'Agenda' },
+            { id: 'Content', icon: Video, label: 'Conteúdo' },
             { id: 'Settings', icon: SettingsIcon, label: 'Ajustes' },
           ].map((item) => (
             <button 

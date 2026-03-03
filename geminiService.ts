@@ -5,8 +5,8 @@ import { Task, Idea } from "./types.ts";
 // Safe check for process and environment variables
 const getApiKey = () => {
   try {
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      return process.env.API_KEY;
+    if (typeof process !== 'undefined' && process.env && process.env.GEMINI_API_KEY) {
+      return process.env.GEMINI_API_KEY;
     }
     return "";
   } catch (e) {

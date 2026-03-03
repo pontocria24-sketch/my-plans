@@ -120,6 +120,24 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 app.use(express.static(__dirname));
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
+app.get('*', (req, res) => {
+  const indexPath = path.join(__dirname, 'index.html');
+  try {
+    let content = fs.readFileSync(indexPath, 'utf-8');
+    const envScript = `
+      <script>
+        window.process = {
+          env: {
+            GEMINI_API_KEY: ${JSON.stringify(process.env.GEMINI_API_KEY || '')}
+          }
+        };
+      </script>
+    `;
+    content = content.replace('</head>', `${envScript}</head>`);
+    res.send(content);
+  } catch (err) {
+    res.sendFile(indexPath);
+  }
+});
 
 app.listen(PORT, () => console.log(`[MYPLANS] Servidor rodando na porta ${PORT}`));
