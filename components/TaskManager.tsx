@@ -47,17 +47,17 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({ id, children, label, 
   const { setNodeRef } = useDroppable({ id });
 
   return (
-    <div ref={setNodeRef} className="w-[300px] lg:w-[380px] bg-slate-100 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 rounded-2xl lg:rounded-[3rem] p-4 lg:p-6 min-h-[60vh] flex flex-col transition-colors">
-      <div className="flex items-center justify-between mb-6 lg:mb-8 px-2 lg:px-4">
-        <div className="flex items-center gap-2 lg:gap-3">
-          <div className={`w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full ${color} shadow-lg shadow-black/40`}></div>
-          <h3 className="font-black text-[10px] lg:text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{label}</h3>
-        </div>
+    <div ref={setNodeRef} className="w-[280px] lg:w-[320px] bg-slate-100 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 rounded-xl lg:rounded-[2rem] p-3 lg:p-4 min-h-[60vh] flex flex-col transition-colors">
+      <div className="flex items-center justify-between mb-4 lg:mb-6 px-1 lg:px-2">
         <div className="flex items-center gap-2">
-          <span className="text-[8px] lg:text-[10px] font-black bg-white dark:bg-slate-950 px-2.5 py-0.5 lg:py-1 rounded-full text-slate-600 border border-slate-200 dark:border-slate-800">{count}</span>
+          <div className={`w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full ${color} shadow-md shadow-black/40`}></div>
+          <h3 className="font-black text-[9px] lg:text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{label}</h3>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[7px] lg:text-[9px] font-black bg-white dark:bg-slate-950 px-2 py-0.5 rounded-full text-slate-600 border border-slate-200 dark:border-slate-800">{count}</span>
           {onDelete && count === 0 && (
             <button onClick={onDelete} className="p-1 text-slate-400 hover:text-rose-500 transition-colors">
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="w-2.5 h-2.5" />
             </button>
           )}
         </div>
@@ -96,34 +96,34 @@ const SortableTask: React.FC<SortableTaskProps> = ({ task, priorities, onEdit, o
     <div 
       ref={setNodeRef}
       style={style}
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 lg:p-6 rounded-2xl lg:rounded-[2.5rem] hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all cursor-pointer group shadow-xl relative overflow-hidden"
+      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 lg:p-4 rounded-xl lg:rounded-[1.5rem] hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all cursor-pointer group shadow-md relative overflow-hidden"
       onClick={() => onEdit(task)}
     >
-      <div className="flex justify-between items-start mb-3 lg:mb-4">
-        <div className="flex items-center gap-2">
+      <div className="flex justify-between items-start mb-2 lg:mb-3">
+        <div className="flex items-center gap-1.5">
           <div {...attributes} {...listeners} className="p-1 cursor-grab active:cursor-grabbing text-slate-400 dark:text-slate-600 hover:text-indigo-400">
-            <GripVertical className="w-4 h-4" />
+            <GripVertical className="w-3.5 h-3.5" />
           </div>
-          <span className={`text-[7px] lg:text-[8px] font-black uppercase tracking-[0.2em] px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg lg:rounded-xl border flex items-center gap-1.5 lg:gap-2 ${prio.color} ${prio.bg}/10 ${prio.value === 'Urgent' ? 'border-rose-600/30' : prio.value === 'High' ? 'border-rose-500/20' : prio.value === 'Medium' ? 'border-amber-500/20' : 'border-emerald-500/20'}`}>
-             <Zap className="w-2.5 h-2.5 lg:w-3 lg:h-3" /> {prio.label}
+          <span className={`text-[6px] lg:text-[7px] font-black uppercase tracking-[0.2em] px-1.5 lg:px-2 py-0.5 lg:py-1 rounded-md lg:rounded-lg border flex items-center gap-1 lg:gap-1.5 ${prio.color} ${prio.bg}/10 ${prio.value === 'Urgent' ? 'border-rose-600/30' : prio.value === 'High' ? 'border-rose-500/20' : prio.value === 'Medium' ? 'border-amber-500/20' : 'border-emerald-500/20'}`}>
+             <Zap className="w-2 h-2 lg:w-2.5 lg:h-2.5" /> {prio.label}
           </span>
         </div>
         <button 
           onClick={(e) => { e.stopPropagation(); onDelete(task.id); }} 
-          className="opacity-0 group-hover:opacity-100 p-1.5 lg:p-2 text-slate-400 dark:text-slate-600 hover:text-rose-500 transition-all bg-slate-50 dark:bg-slate-950 rounded-lg lg:rounded-xl border border-slate-200 dark:border-slate-800"
+          className="opacity-0 group-hover:opacity-100 p-1 lg:p-1.5 text-slate-400 dark:text-slate-600 hover:text-rose-500 transition-all bg-slate-50 dark:bg-slate-950 rounded-md lg:rounded-lg border border-slate-200 dark:border-slate-800"
         >
-          <Trash2 className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+          <Trash2 className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
         </button>
       </div>
-      <h4 className="text-base lg:text-lg font-black text-slate-900 dark:text-white mb-1.5 lg:mb-2 tracking-tight leading-tight uppercase">{task.title}</h4>
-      <p className="text-[10px] lg:text-xs text-slate-500 line-clamp-2 italic mb-4 lg:mb-6">"{task.description || 'Nenhuma descrição detalhada...'}"</p>
+      <h4 className="text-sm lg:text-base font-black text-slate-900 dark:text-white mb-1 lg:mb-1.5 tracking-tight leading-tight uppercase">{task.title}</h4>
+      <p className="text-[9px] lg:text-[10px] text-slate-500 line-clamp-2 italic mb-3 lg:mb-4">"{task.description || 'Nenhuma descrição detalhada...'}"</p>
       
-      <div className="flex justify-between items-center pt-4 lg:pt-5 border-t border-slate-200 dark:border-slate-800/60">
-        <div className="flex items-center gap-1.5 lg:gap-2 text-[8px] lg:text-[9px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">
-          <Calendar className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> 
+      <div className="flex justify-between items-center pt-3 lg:pt-4 border-t border-slate-200 dark:border-slate-800/60">
+        <div className="flex items-center gap-1 lg:gap-1.5 text-[7px] lg:text-[8px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">
+          <Calendar className="w-2.5 h-2.5 lg:w-3 lg:h-3" /> 
           {new Date(task.endDate).toLocaleDateString('pt-BR', {day:'2-digit', month:'short'})}
         </div>
-        <div className="w-7 h-7 lg:w-8 lg:h-8 bg-slate-50 dark:bg-slate-950 rounded-lg lg:rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center text-[9px] lg:text-[10px] font-black text-indigo-400 shadow-inner">
+        <div className="w-6 h-6 lg:w-7 lg:h-7 bg-slate-50 dark:bg-slate-950 rounded-md lg:rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-center text-[8px] lg:text-[9px] font-black text-indigo-400 shadow-inner">
           {task.responsible.charAt(0)}
         </div>
       </div>
@@ -138,6 +138,17 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newColumnLabel, setNewColumnLabel] = useState('');
+  const [newColumnColor, setNewColumnColor] = useState('bg-indigo-500');
+  
+  const columnColors = [
+    { name: 'Indigo', class: 'bg-indigo-500' },
+    { name: 'Slate', class: 'bg-slate-500' },
+    { name: 'Emerald', class: 'bg-emerald-500' },
+    { name: 'Rose', class: 'bg-rose-500' },
+    { name: 'Amber', class: 'bg-amber-500' },
+    { name: 'Violet', class: 'bg-violet-500' },
+    { name: 'Cyan', class: 'bg-cyan-500' },
+  ];
   
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -198,12 +209,13 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
   const handleAddColumn = () => {
     if (!newColumnLabel.trim()) return;
     const newCol = {
-      id: newColumnLabel.toLowerCase().replace(/\s+/g, '-'),
+      id: newColumnLabel.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
       label: newColumnLabel,
-      color: 'bg-indigo-500'
+      color: newColumnColor
     };
     setColumns(prev => [...prev, newCol]);
     setNewColumnLabel('');
+    setNewColumnColor('bg-indigo-500');
     setShowColumnModal(false);
   };
 
@@ -227,21 +239,26 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
     const overTask = tasks.find(t => t.id === overId);
     const isOverAColumn = columns.some(s => s.id === overId);
 
-    if (overTask && activeTask.status !== overTask.status) {
+    let overContainerId = '';
+    if (isOverAColumn) {
+      overContainerId = overId;
+    } else if (overTask) {
+      overContainerId = overTask.status;
+    }
+
+    if (overContainerId && activeTask.status !== overContainerId) {
       setTasks(prev => {
         const activeIndex = prev.findIndex(t => t.id === activeId);
-        const overIndex = prev.findIndex(t => t.id === overId);
+        const updatedTasks = [...prev];
         
-        const updatedTasks = [...prev];
-        updatedTasks[activeIndex] = { ...activeTask, status: overTask.status };
-        return arrayMove(updatedTasks, activeIndex, overIndex);
-      });
-    } else if (isOverAColumn && activeTask.status !== overId) {
-      setTasks(prev => {
-        const activeIndex = prev.findIndex(t => t.id === activeId);
-        const updatedTasks = [...prev];
-        updatedTasks[activeIndex] = { ...activeTask, status: overId as Status };
-        return arrayMove(updatedTasks, activeIndex, updatedTasks.length - 1);
+        updatedTasks[activeIndex] = { ...activeTask, status: overContainerId as Status };
+        
+        if (overTask) {
+          const overIndex = prev.findIndex(t => t.id === overId);
+          return arrayMove(updatedTasks, activeIndex, overIndex);
+        }
+        
+        return updatedTasks;
       });
     }
   };
@@ -274,36 +291,36 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
   const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
 
   return (
-    <div className="h-full flex flex-col space-y-6 lg:space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6 px-2">
+    <div className="h-full flex flex-col space-y-4 lg:space-y-6 animate-in fade-in duration-500">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 px-1">
         <div>
-          <h2 className="text-2xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase flex items-center gap-2 lg:gap-3">
-             <CheckSquare className="w-6 h-6 lg:w-8 lg:h-8 text-indigo-500" /> Fluxo de Trabalho
+          <h2 className="text-xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase flex items-center gap-2 lg:gap-3">
+             <CheckSquare className="w-5 h-5 lg:w-7 lg:h-7 text-indigo-500" /> Fluxo de Trabalho
           </h2>
-          <p className="text-slate-500 text-[10px] lg:text-sm font-medium">Sincronizado automaticamente com sua VPS.</p>
+          <p className="text-slate-500 text-[9px] lg:text-xs font-medium">Sincronizado automaticamente com sua VPS.</p>
         </div>
-        <div className="flex flex-wrap gap-3 lg:gap-4 w-full md:w-auto">
+        <div className="flex flex-wrap gap-2 lg:gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:flex-none">
-            <Search className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 lg:w-4 lg:h-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 lg:w-3.5 lg:h-3.5 text-slate-500" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl lg:rounded-2xl py-2 lg:py-3 pl-10 lg:pl-12 pr-4 lg:pr-6 text-[10px] lg:text-xs w-full md:w-48 lg:w-64 text-slate-900 dark:text-white outline-none focus:border-indigo-500 transition-all" 
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg lg:rounded-xl py-1.5 lg:py-2 pl-9 lg:pl-10 pr-3 lg:pr-4 text-[9px] lg:text-[11px] w-full md:w-40 lg:w-56 text-slate-900 dark:text-white outline-none focus:border-indigo-500 transition-all" 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
             />
           </div>
           <button 
             onClick={() => setShowColumnModal(true)} 
-            className="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 lg:px-6 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-black text-[8px] lg:text-[10px] uppercase tracking-widest shadow-lg flex items-center gap-2 border border-slate-300 dark:border-slate-700 active:scale-95 transition-all"
+            className="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 lg:px-4 py-1.5 lg:py-2 rounded-lg lg:rounded-xl font-black text-[7px] lg:text-[9px] uppercase tracking-widest shadow-md flex items-center gap-1.5 border border-slate-300 dark:border-slate-700 active:scale-95 transition-all"
           >
-            <Plus className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Novo Quadro
+            <Plus className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> Quadro
           </button>
           <button 
             onClick={() => { setEditingTask(null); setShowModal(true); }} 
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 lg:px-8 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-black text-[8px] lg:text-[10px] uppercase tracking-widest shadow-xl flex items-center gap-2 border border-indigo-500/30 active:scale-95 transition-all"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 lg:px-6 py-1.5 lg:py-2 rounded-lg lg:rounded-xl font-black text-[7px] lg:text-[9px] uppercase tracking-widest shadow-lg flex items-center gap-1.5 border border-indigo-500/30 active:scale-95 transition-all"
           >
-            <Plus className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Nova Tarefa
+            <Plus className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> Tarefa
           </button>
         </div>
       </div>
@@ -361,14 +378,14 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
           }),
         }}>
           {activeTask ? (
-            <div className="bg-white dark:bg-slate-900 border border-indigo-500/50 p-4 lg:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-2xl relative overflow-hidden w-[300px] lg:w-[380px]">
-              <div className="flex justify-between items-start mb-3 lg:mb-4">
-                <span className={`text-[7px] lg:text-[8px] font-black uppercase tracking-[0.2em] px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg lg:rounded-xl border flex items-center gap-1.5 lg:gap-2 text-indigo-400 bg-indigo-500/10 border-indigo-500/20`}>
-                   <Zap className="w-2.5 h-2.5 lg:w-3 lg:h-3" /> {activeTask.priority}
+            <div className="bg-white dark:bg-slate-900 border border-indigo-500/50 p-3 lg:p-4 rounded-xl lg:rounded-[1.5rem] shadow-2xl relative overflow-hidden w-[280px] lg:w-[320px]">
+              <div className="flex justify-between items-start mb-2 lg:mb-3">
+                <span className={`text-[6px] lg:text-[7px] font-black uppercase tracking-[0.2em] px-1.5 lg:px-2 py-0.5 lg:py-1 rounded-md lg:rounded-lg border flex items-center gap-1 lg:gap-1.5 text-indigo-400 bg-indigo-500/10 border-indigo-500/20`}>
+                   <Zap className="w-2 h-2 lg:w-2.5 lg:h-2.5" /> {activeTask.priority}
                 </span>
               </div>
-              <h4 className="text-base lg:text-lg font-black text-slate-900 dark:text-white mb-1.5 lg:mb-2 tracking-tight leading-tight uppercase">{activeTask.title}</h4>
-              <p className="text-[10px] lg:text-xs text-slate-500 line-clamp-2 italic mb-4 lg:mb-6">"{activeTask.description || 'Nenhuma descrição detalhada...'}"</p>
+              <h4 className="text-sm lg:text-base font-black text-slate-900 dark:text-white mb-1 lg:mb-1.5 tracking-tight leading-tight uppercase">{activeTask.title}</h4>
+              <p className="text-[9px] lg:text-[10px] text-slate-500 line-clamp-2 italic mb-3 lg:mb-4">"{activeTask.description || 'Nenhuma descrição detalhada...'}"</p>
             </div>
           ) : null}
         </DragOverlay>
@@ -392,6 +409,19 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
                   onChange={e => setNewColumnLabel(e.target.value)}
                   placeholder="Ex: Revisão, Bloqueado..."
                 />
+              </div>
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Cor do Indicador</label>
+                <div className="flex flex-wrap gap-2">
+                  {columnColors.map(c => (
+                    <button
+                      key={c.class}
+                      onClick={() => setNewColumnColor(c.class)}
+                      className={`w-8 h-8 rounded-full ${c.class} border-2 transition-all ${newColumnColor === c.class ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                      title={c.name}
+                    />
+                  ))}
+                </div>
               </div>
               <button onClick={handleAddColumn} className="w-full bg-indigo-600 hover:bg-indigo-700 py-4 rounded-2xl text-white font-black uppercase text-[10px] tracking-[0.2em] shadow-xl active:scale-95 transition-all border border-indigo-500/30">Criar Quadro</button>
             </div>

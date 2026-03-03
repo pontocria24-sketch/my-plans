@@ -28,15 +28,15 @@ const safeParse = (key: string, fallback: any) => {
 };
 
 const AppLogo: React.FC<{ isOpen: boolean }> = ({ isOpen }) => (
-  <div className="flex items-center gap-3 group">
-    <div className="relative w-10 h-10 flex items-center justify-center">
-      <div className="absolute inset-0 bg-indigo-600 rounded-xl rotate-6 group-hover:rotate-0 transition-transform duration-300 shadow-lg shadow-indigo-600/20"></div>
+  <div className="flex items-center gap-2.5 group">
+    <div className="relative w-8 h-8 flex items-center justify-center">
+      <div className="absolute inset-0 bg-indigo-600 rounded-lg rotate-6 group-hover:rotate-0 transition-transform duration-300 shadow-lg shadow-indigo-600/20"></div>
       <div className="relative z-10 flex items-center justify-center">
-        <Rocket className="w-5 h-5 text-white -rotate-12 transform group-hover:rotate-0 transition-transform" />
+        <Rocket className="w-4 h-4 text-white -rotate-12 transform group-hover:rotate-0 transition-transform" />
       </div>
     </div>
     {isOpen && (
-      <h1 className="font-black text-2xl tracking-tighter text-slate-900 dark:text-white lowercase">
+      <h1 className="font-black text-xl tracking-tighter text-slate-900 dark:text-white lowercase">
         my<span className="text-indigo-600 dark:text-indigo-400">plans</span>
       </h1>
     )}
@@ -248,14 +248,14 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-white dark:bg-slate-950 overflow-hidden text-slate-900 dark:text-slate-200 transition-colors duration-300">
-      <aside className={`fixed inset-y-0 left-0 z-50 transform ${sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0 lg:w-20'} transition-all duration-500 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 backdrop-blur-xl flex flex-col`}>
-        <div className="p-4 lg:p-6 flex items-center justify-between">
+      <aside className={`fixed inset-y-0 left-0 z-50 transform ${sidebarOpen ? 'translate-x-0 w-56' : '-translate-x-full lg:translate-x-0 lg:w-16'} transition-all duration-500 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 backdrop-blur-xl flex flex-col`}>
+        <div className="p-4 lg:p-5 flex items-center justify-between">
           <AppLogo isOpen={sidebarOpen} />
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-2 text-slate-500">
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
-        <nav className="flex-1 px-2 lg:px-4 py-4 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 px-2 lg:px-3 py-2 space-y-1 overflow-y-auto">
           {[
             { id: 'Dashboard', icon: LayoutDashboard, label: 'Geral' },
             { id: 'Tasks', icon: CheckSquare, label: 'Tarefas' },
@@ -269,15 +269,15 @@ const App: React.FC = () => {
             <button 
               key={item.id} 
               onClick={() => { setActiveView(item.id as View); if (window.innerWidth < 1024) setSidebarOpen(false); }} 
-              className={`w-full flex items-center gap-3 lg:gap-4 px-3 lg:px-4 py-3 rounded-xl lg:rounded-2xl transition-all ${activeView === item.id ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'}`}
+              className={`w-full flex items-center gap-2.5 lg:gap-3 px-3 lg:px-3.5 py-2.5 rounded-lg lg:rounded-xl transition-all ${activeView === item.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'}`}
             >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {(sidebarOpen || window.innerWidth < 1024) && <span className="font-bold text-[10px] lg:text-xs">{item.label}</span>}
+              <item.icon className="w-4.5 h-4.5 flex-shrink-0" />
+              {(sidebarOpen || window.innerWidth < 1024) && <span className="font-bold text-[9px] lg:text-[11px]">{item.label}</span>}
             </button>
           ))}
         </nav>
-        <button onClick={() => { setIsLoggedIn(false); localStorage.removeItem('myplans_auth'); }} className="p-4 lg:p-6 text-slate-500 hover:text-rose-500 flex items-center gap-4 transition-colors">
-          <LogOut className="w-5 h-5" /> {(sidebarOpen || window.innerWidth < 1024) && <span className="font-black text-[10px] uppercase">Sair</span>}
+        <button onClick={() => { setIsLoggedIn(false); localStorage.removeItem('myplans_auth'); }} className="p-4 lg:p-5 text-slate-500 hover:text-rose-500 flex items-center gap-3 transition-colors">
+          <LogOut className="w-4.5 h-4.5" /> {(sidebarOpen || window.innerWidth < 1024) && <span className="font-black text-[9px] uppercase">Sair</span>}
         </button>
       </aside>
 
@@ -289,24 +289,24 @@ const App: React.FC = () => {
         ></div>
       )}
 
-      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-500 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
-        <header className="h-16 lg:h-20 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/30 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 z-40">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 lg:p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all border border-slate-200 dark:border-slate-700">
-              <Menu className="w-5 h-5" />
+      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-500 ${sidebarOpen ? 'lg:ml-56' : 'lg:ml-16'}`}>
+        <header className="h-14 lg:h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/30 backdrop-blur-md flex items-center justify-between px-4 lg:px-6 z-40">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 lg:p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all border border-slate-200 dark:border-slate-700">
+              <Menu className="w-4.5 h-4.5" />
             </button>
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 lg:p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all flex items-center justify-center border border-slate-200 dark:border-slate-700"
+              className="p-1.5 lg:p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all flex items-center justify-center border border-slate-200 dark:border-slate-700"
               title={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
             >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === 'dark' ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
             </button>
           </div>
           
-          <div className="flex items-center gap-3">
-            <span className="hidden md:block text-[10px] font-black uppercase text-slate-500 tracking-widest">{userConfig.name}</span>
-            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-black text-indigo-600 dark:text-indigo-400 overflow-hidden shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <span className="hidden md:block text-[9px] font-black uppercase text-slate-500 tracking-widest">{userConfig.name}</span>
+            <div className="w-7 h-7 lg:w-9 lg:h-9 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-black text-indigo-600 dark:text-indigo-400 overflow-hidden shadow-md">
               {userConfig.avatar ? (
                 <img src={userConfig.avatar} alt="Perfil" className="w-full h-full object-cover" />
               ) : (
@@ -315,7 +315,7 @@ const App: React.FC = () => {
             </div>
           </div>
         </header>
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 bg-slate-50/50 dark:bg-transparent">{renderContent()}</div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-8 bg-slate-50/50 dark:bg-transparent">{renderContent()}</div>
       </main>
     </div>
   );

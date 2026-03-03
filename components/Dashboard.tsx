@@ -120,90 +120,90 @@ const Dashboard: React.FC<Props> = ({ tasks, goals, events, workLogs, userConfig
     <div className="space-y-6 lg:space-y-10 animate-in fade-in duration-700 pb-20 text-slate-900 dark:text-white">
       
       {/* Seção 1: Metas Estratégicas (Filtro 3 Mensais / 3 Anuais) */}
-      <section className="space-y-4 lg:space-y-6">
-        <div className="flex items-center justify-between px-2">
-          <div className="flex items-center gap-2 lg:gap-3">
-             <Target className="w-5 h-5 lg:w-6 lg:h-6 text-indigo-500 dark:text-indigo-400" />
-             <h3 className="text-lg lg:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Foco do Mês Atual</h3>
+      <section className="space-y-3 lg:space-y-4">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+             <Target className="w-4 h-4 lg:w-5 lg:h-5 text-indigo-500 dark:text-indigo-400" />
+             <h3 className="text-base lg:text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">Foco do Mês</h3>
           </div>
-          <span className="text-[8px] lg:text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-3 lg:px-4 py-1 lg:py-1.5 rounded-full border border-indigo-500/20">
+          <span className="text-[7px] lg:text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 lg:px-3 py-1 rounded-full border border-indigo-500/20">
             {new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
           </span>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
           {displayGoals.length > 0 ? displayGoals.map(goal => {
             const progress = Math.min(100, (goal.currentValue / goal.targetValue) * 100);
             const daysLeft = Math.ceil((new Date(goal.targetDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
             return (
-              <div key={goal.id} className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60 p-5 lg:p-6 rounded-2xl lg:rounded-[2.5rem] hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all group relative overflow-hidden shadow-xl dark:shadow-2xl">
-                <div className="flex justify-between items-start mb-4">
+              <div key={goal.id} className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60 p-4 lg:p-5 rounded-xl lg:rounded-[2rem] hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all group relative overflow-hidden shadow-md dark:shadow-xl">
+                <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h4 className="font-black text-slate-900 dark:text-white text-base lg:text-lg tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase">{goal.title}</h4>
-                    <p className="text-[8px] lg:text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="font-black text-slate-900 dark:text-white text-sm lg:text-base tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase">{goal.title}</h4>
+                    <p className="text-[7px] lg:text-[9px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2">
                       {goal.type === 'Yearly' ? <span className="text-amber-600 dark:text-amber-500/80">Meta Anual</span> : <span className="text-indigo-600 dark:text-indigo-400/80">Meta Mensal</span>}
                       <span className="opacity-40">•</span>
                       {goal.category}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-base lg:text-lg font-black text-indigo-600 dark:text-indigo-400">{Math.round(progress)}%</p>
+                    <p className="text-sm lg:text-base font-black text-indigo-600 dark:text-indigo-400">{Math.round(progress)}%</p>
                   </div>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
+                <div className="w-full bg-slate-100 dark:bg-slate-950 h-1.5 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
                   <div 
-                    className="h-full bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] transition-all duration-1000"
+                    className="h-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.4)] transition-all duration-1000"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-                <div className="mt-4 lg:mt-5 flex justify-between items-center">
-                  <div className="flex items-center gap-2 text-[8px] lg:text-[10px] font-black text-slate-500 uppercase">
-                    <Hourglass className="w-3 h-3 text-amber-500" />
+                <div className="mt-3 lg:mt-4 flex justify-between items-center">
+                  <div className="flex items-center gap-1.5 text-[7px] lg:text-[9px] font-black text-slate-500 uppercase">
+                    <Hourglass className="w-2.5 h-2.5 text-amber-500" />
                     <span>{daysLeft > 0 ? `Restam ${daysLeft} dias` : (goal.type === 'Yearly' ? 'Até o fim do ano' : 'Vencido')}</span>
                   </div>
-                  <span className="text-[8px] lg:text-[10px] font-bold text-slate-400">{goal.currentValue} / {goal.targetValue} {goal.unit}</span>
+                  <span className="text-[7px] lg:text-[9px] font-bold text-slate-400">{goal.currentValue} / {goal.targetValue} {goal.unit}</span>
                 </div>
               </div>
             );
           }) : (
-            <div className="col-span-full py-10 lg:py-12 text-center bg-slate-50 dark:bg-slate-900/20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl lg:rounded-[2.5rem]">
-              <Target className="w-10 h-10 lg:w-12 lg:h-12 text-slate-300 dark:text-slate-800 mx-auto mb-4" />
-              <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Nenhuma meta ativa para exibição.</p>
+            <div className="col-span-full py-8 lg:py-10 text-center bg-slate-50 dark:bg-slate-900/20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl lg:rounded-[2rem]">
+              <Target className="w-8 h-8 lg:w-10 lg:h-10 text-slate-300 dark:text-slate-800 mx-auto mb-3" />
+              <p className="text-slate-500 font-bold uppercase tracking-widest text-[9px]">Nenhuma meta ativa para exibição.</p>
             </div>
           )}
         </div>
       </section>
 
       {/* Seção 2: Grid de Métricas Rápidas */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/40 p-5 lg:p-8 rounded-2xl lg:rounded-[2.5rem] hover:border-indigo-500/30 transition-all group shadow-lg dark:shadow-xl">
-            <div className={`p-3 lg:p-4 rounded-xl lg:rounded-2xl ${stat.bg} w-fit mb-3 lg:mb-5 group-hover:scale-110 transition-transform`}>
-              <stat.icon className={`w-5 h-5 lg:w-6 lg:h-6 ${stat.color}`} />
+          <div key={i} className="bg-white dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/40 p-4 lg:p-6 rounded-xl lg:rounded-[2rem] hover:border-indigo-500/30 transition-all group shadow-md dark:shadow-xl">
+            <div className={`p-2 lg:p-3 rounded-lg lg:rounded-xl ${stat.bg} w-fit mb-2 lg:mb-4 group-hover:scale-110 transition-transform`}>
+              <stat.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${stat.color}`} />
             </div>
-            <p className="text-slate-500 text-[8px] lg:text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
-            <h3 className="text-xl lg:text-3xl font-black mt-1 lg:mt-2 text-slate-900 dark:text-white">{stat.value}</h3>
+            <p className="text-slate-500 text-[7px] lg:text-[9px] font-black uppercase tracking-[0.2em]">{stat.label}</p>
+            <h3 className="text-lg lg:text-2xl font-black mt-1 text-slate-900 dark:text-white">{stat.value}</h3>
           </div>
         ))}
       </div>
 
       {/* Seção 3: Painel Central de Agenda */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
         
         {/* Central de Compromissos */}
-        <div className="lg:col-span-8 bg-white dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/40 p-6 lg:p-10 rounded-2xl lg:rounded-[3rem] shadow-xl dark:shadow-2xl relative overflow-hidden backdrop-blur-sm">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 lg:mb-12 gap-4 lg:gap-6 relative z-10">
+        <div className="lg:col-span-8 bg-white dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/40 p-5 lg:p-8 rounded-xl lg:rounded-[2.5rem] shadow-lg dark:shadow-2xl relative overflow-hidden backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-3 lg:gap-4 relative z-10">
             <div>
-              <h3 className="text-lg lg:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2 lg:gap-3 tracking-tight uppercase">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-indigo-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
-                  <CalendarIcon className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
+              <h3 className="text-base lg:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2 lg:gap-3 tracking-tight uppercase">
+                <div className="w-7 h-7 lg:w-9 lg:h-9 bg-indigo-600 rounded-lg lg:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
+                  <CalendarIcon className="w-3.5 h-3.5 lg:w-4.5 lg:h-4.5 text-white" />
                 </div>
-                Fluxo de Compromissos
+                Agenda Estratégica
               </h3>
-              <p className="text-xs lg:text-sm text-slate-500 mt-1 font-medium italic">Seus compromissos organizados com precisão.</p>
+              <p className="text-[10px] lg:text-xs text-slate-500 mt-0.5 font-medium italic">Seus compromissos organizados.</p>
             </div>
             
-            <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner overflow-x-auto max-w-full">
+            <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-lg lg:rounded-xl border border-slate-200 dark:border-slate-800 shadow-inner overflow-x-auto max-w-full">
               {[
                 { id: 'Day', label: 'Hoje', icon: List },
                 { id: 'Week', label: 'Semana', icon: LayoutGrid },
@@ -212,49 +212,48 @@ const Dashboard: React.FC<Props> = ({ tasks, goals, events, workLogs, userConfig
                 <button
                   key={mode.id}
                   onClick={() => setCalendarMode(mode.id as CalendarMode)}
-                  className={`px-3 lg:px-4 py-1.5 lg:py-2 rounded-lg lg:rounded-xl text-[8px] lg:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap ${
-                    calendarMode === mode.id ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                  className={`px-2.5 lg:px-3.5 py-1 lg:py-1.5 rounded-md lg:rounded-lg text-[7px] lg:text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                    calendarMode === mode.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                   }`}
                 >
-                  <mode.icon className="w-3 h-3" /> {mode.label}
+                  <mode.icon className="w-2.5 h-2.5" /> {mode.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="animate-in slide-in-from-bottom-4 duration-500 min-h-[300px] lg:min-h-[420px]">
+          <div className="animate-in slide-in-from-bottom-4 duration-500 min-h-[250px] lg:min-h-[350px]">
             {calendarMode === 'Week' && (
-              <div className="grid grid-cols-7 gap-2 lg:gap-3">
+              <div className="grid grid-cols-7 gap-1.5 lg:gap-2">
                 {weekDays.map((day, idx) => {
                   const dateStr = day.toISOString().split('T')[0];
                   const isToday = dateStr === todayStr;
                   const dayEvents = events.filter(e => e.date === dateStr).sort((a,b) => a.time.localeCompare(b.time));
                   
                   return (
-                    <div key={idx} className={`flex flex-col rounded-xl lg:rounded-[2.5rem] p-2 lg:p-3 transition-all border group ${
+                    <div key={idx} className={`flex flex-col rounded-lg lg:rounded-[2rem] p-1.5 lg:p-2.5 transition-all border group ${
                       isToday ? 'bg-indigo-600/10 border-indigo-500/50 ring-1 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800/60'
                     }`}>
-                      <div className="text-center mb-3 lg:mb-6">
-                        <p className={`text-[7px] lg:text-[8px] font-black uppercase tracking-[0.2em] ${isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}`}>
+                      <div className="text-center mb-2 lg:mb-4">
+                        <p className={`text-[6px] lg:text-[7px] font-black uppercase tracking-[0.2em] ${isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}`}>
                           {day.toLocaleDateString('pt-BR', { weekday: 'short' })}
                         </p>
-                        <p className={`text-lg lg:text-2xl font-black mt-0.5 ${isToday ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
+                        <p className={`text-sm lg:text-xl font-black mt-0.5 ${isToday ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
                           {day.getDate()}
                         </p>
                       </div>
                       
-                      <div className="space-y-1.5 lg:space-y-2 flex-1">
+                      <div className="space-y-1 lg:space-y-1.5 flex-1">
                         {dayEvents.map(event => (
                           <div 
                             key={event.id} 
                             onClick={() => setSelectedEvent(event)}
-                            className={`p-1.5 lg:p-2.5 rounded-lg lg:rounded-2xl border cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-sm ${getEventStyles(event.type)}`}
+                            className={`p-1 lg:p-2 rounded-md lg:rounded-xl border cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-sm ${getEventStyles(event.type)}`}
                           >
-                             <div className="flex items-center gap-1 mb-1 opacity-90">
-                                {getEventIcon(event.type)}
-                                <span className="text-[7px] lg:text-[8px] font-black uppercase tracking-widest">{event.time}</span>
+                             <div className="flex items-center gap-1 mb-0.5 opacity-90">
+                                <span className="text-[6px] lg:text-[7px] font-black uppercase tracking-widest">{event.time}</span>
                              </div>
-                             <p className="text-[8px] lg:text-[9px] font-black leading-tight line-clamp-2 uppercase tracking-tighter">
+                             <p className="text-[7px] lg:text-[8px] font-black leading-tight line-clamp-2 uppercase tracking-tighter">
                                {event.title}
                              </p>
                           </div>
@@ -316,50 +315,50 @@ const Dashboard: React.FC<Props> = ({ tasks, goals, events, workLogs, userConfig
         </div>
 
         {/* Gestão de Jornada (MODIFICADO PARA PROGRESSO SEMANAL) */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 lg:p-8 rounded-2xl lg:rounded-[3.5rem] shadow-xl dark:shadow-2xl flex-1 relative overflow-hidden group">
+        <div className="lg:col-span-4 flex flex-col gap-4 lg:gap-6">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 lg:p-6 rounded-xl lg:rounded-[2.5rem] shadow-lg dark:shadow-2xl flex-1 relative overflow-hidden group">
              <div className="absolute -top-10 -right-10 p-8 opacity-[0.03] group-hover:opacity-10 transition-opacity duration-1000">
-                <CalendarDays className="w-48 h-48 lg:w-64 lg:h-64 text-indigo-500" />
+                <CalendarDays className="w-48 h-48 lg:w-56 lg:h-56 text-indigo-500" />
              </div>
              
-             <h3 className="text-lg lg:text-xl font-black text-slate-900 dark:text-white mb-6 lg:mb-8 tracking-tight flex items-center gap-3 uppercase">
-                <CalendarDays className="w-5 h-5 lg:w-6 lg:h-6 text-indigo-600 dark:text-indigo-400" /> Progresso da Semana
+             <h3 className="text-base lg:text-lg font-black text-slate-900 dark:text-white mb-4 lg:mb-6 tracking-tight flex items-center gap-2 uppercase">
+                <CalendarDays className="w-4 h-4 lg:w-5 lg:h-5 text-indigo-600 dark:text-indigo-400" /> Progresso Semanal
              </h3>
 
-             <div className="space-y-6 lg:space-y-8 relative z-10">
-                <div className="text-center py-6 lg:py-10 bg-slate-50 dark:bg-slate-950/50 rounded-2xl lg:rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-inner group-hover:border-indigo-500/20 transition-all">
-                   <p className="text-[8px] lg:text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 lg:mb-3">Acumulado na Semana</p>
-                   <div className="flex items-center justify-center gap-3 lg:gap-4">
-                      <div className={`p-1.5 lg:p-2 rounded-lg lg:rounded-xl bg-indigo-500/10`}>
-                        <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-indigo-600 dark:text-indigo-400" />
+             <div className="space-y-4 lg:space-y-6 relative z-10">
+                <div className="text-center py-4 lg:py-6 bg-slate-50 dark:bg-slate-950/50 rounded-xl lg:rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-inner group-hover:border-indigo-500/20 transition-all">
+                   <p className="text-[7px] lg:text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 lg:mb-2">Acumulado</p>
+                   <div className="flex items-center justify-center gap-2 lg:gap-3">
+                      <div className={`p-1 lg:p-1.5 rounded-lg bg-indigo-500/10`}>
+                        <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-indigo-600 dark:text-indigo-400" />
                       </div>
-                      <span className={`text-4xl lg:text-5xl font-black tracking-tighter tabular-nums text-slate-900 dark:text-white`}>
-                         {(weekStats.totalWeekMs / 3600000).toFixed(1)}<span className="text-2xl lg:text-3xl ml-1 text-slate-400 dark:text-slate-600">h</span>
+                      <span className={`text-2xl lg:text-3xl font-black tracking-tighter tabular-nums text-slate-900 dark:text-white`}>
+                         {(weekStats.totalWeekMs / 3600000).toFixed(1)}<span className="text-lg lg:text-xl ml-0.5 text-slate-400 dark:text-slate-600">h</span>
                       </span>
                    </div>
                 </div>
 
-                <div className="space-y-3 lg:space-y-4">
+                <div className="space-y-2 lg:space-y-3">
                   <div className="flex justify-between items-end">
-                    <span className="text-[8px] lg:text-[10px] text-slate-500 font-black uppercase tracking-widest">Aproveitamento</span>
-                    <span className="text-2xl lg:text-3xl font-black text-indigo-600 dark:text-indigo-400 tabular-nums">{Math.round(weekStats.performance)}%</span>
+                    <span className="text-[7px] lg:text-[9px] text-slate-500 font-black uppercase tracking-widest">Performance</span>
+                    <span className="text-lg lg:text-xl font-black text-indigo-600 dark:text-indigo-400 tabular-nums">{Math.round(weekStats.performance)}%</span>
                   </div>
-                  <div className="h-4 lg:h-5 w-full bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800/60 p-1 shadow-inner">
+                  <div className="h-3 lg:h-4 w-full bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800/60 p-0.5 shadow-inner">
                     <div 
-                      className={`h-full transition-all duration-1000 rounded-full ${weekStats.performance >= 100 ? 'bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 'bg-indigo-600 shadow-[0_0_20px_rgba(99,102,241,0.5)]'}`}
+                      className={`h-full transition-all duration-1000 rounded-full ${weekStats.performance >= 100 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]' : 'bg-indigo-600 shadow-[0_0_10px_rgba(99,102,241,0.4)]'}`}
                       style={{ width: `${weekStats.performance}%` }}
                     ></div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 lg:gap-4">
-                  <div className="bg-slate-50 dark:bg-slate-950/40 p-4 lg:p-5 rounded-xl lg:rounded-[1.5rem] border border-slate-200 dark:border-slate-800 text-center group-hover:border-slate-300 dark:group-hover:border-slate-700 transition-all shadow-sm">
-                    <p className="text-[8px] lg:text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase mb-1 tracking-widest">Meta Semanal</p>
-                    <p className="text-lg lg:text-xl font-black text-slate-900 dark:text-white">{(weekStats.weeklyTargetMs / 3600000).toFixed(0)}h</p>
+                <div className="grid grid-cols-2 gap-2 lg:gap-3">
+                  <div className="bg-slate-50 dark:bg-slate-950/40 p-3 lg:p-4 rounded-lg lg:rounded-[1.2rem] border border-slate-200 dark:border-slate-800 text-center group-hover:border-slate-300 dark:group-hover:border-slate-700 transition-all shadow-sm">
+                    <p className="text-[6px] lg:text-[8px] font-black text-slate-500 dark:text-slate-600 uppercase mb-0.5 tracking-widest">Meta</p>
+                    <p className="text-sm lg:text-base font-black text-slate-900 dark:text-white">{(weekStats.weeklyTargetMs / 3600000).toFixed(0)}h</p>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-950/40 p-4 lg:p-5 rounded-xl lg:rounded-[1.5rem] border border-slate-200 dark:border-slate-800 text-center group-hover:border-slate-300 dark:group-hover:border-slate-700 transition-all shadow-sm">
-                    <p className="text-[8px] lg:text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase mb-1 tracking-widest">Saldo Pendente</p>
-                    <p className="text-lg lg:text-xl font-black text-indigo-600 dark:text-indigo-400">
+                  <div className="bg-slate-50 dark:bg-slate-950/40 p-3 lg:p-4 rounded-lg lg:rounded-[1.2rem] border border-slate-200 dark:border-slate-800 text-center group-hover:border-slate-300 dark:group-hover:border-slate-700 transition-all shadow-sm">
+                    <p className="text-[6px] lg:text-[8px] font-black text-slate-500 dark:text-slate-600 uppercase mb-0.5 tracking-widest">Pendente</p>
+                    <p className="text-sm lg:text-base font-black text-indigo-600 dark:text-indigo-400">
                        {(weekStats.remainingMs / 3600000).toFixed(1)}h
                     </p>
                   </div>
@@ -367,18 +366,18 @@ const Dashboard: React.FC<Props> = ({ tasks, goals, events, workLogs, userConfig
              </div>
           </div>
           
-          <div className="bg-indigo-600 p-6 lg:p-8 rounded-2xl lg:rounded-[3.5rem] shadow-xl shadow-indigo-600/30 text-white flex items-center justify-between group cursor-pointer overflow-hidden relative active:scale-95 transition-all">
+          <div className="bg-indigo-600 p-4 lg:p-6 rounded-xl lg:rounded-[2.5rem] shadow-lg shadow-indigo-600/20 text-white flex items-center justify-between group cursor-pointer overflow-hidden relative active:scale-95 transition-all">
              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-             <div className="flex items-center gap-4 lg:gap-5 relative z-10">
-                <div className="p-3 lg:p-4 bg-white/10 rounded-xl lg:rounded-2xl backdrop-blur-md">
-                   <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6" />
+             <div className="flex items-center gap-3 lg:gap-4 relative z-10">
+                <div className="p-2 lg:p-3 bg-white/10 rounded-lg lg:rounded-xl backdrop-blur-md">
+                   <ChevronRight className="w-4 h-4 lg:w-5 lg:h-5" />
                 </div>
                 <div>
-                   <p className="text-[8px] lg:text-[10px] font-black uppercase tracking-[0.3em] mb-1 text-indigo-200">Acesso Premium</p>
-                   <h4 className="text-xl lg:text-2xl font-black tracking-tighter uppercase">Central de Ponto</h4>
+                   <p className="text-[7px] lg:text-[9px] font-black uppercase tracking-[0.2em] mb-0.5 text-indigo-200">Acesso Rápido</p>
+                   <h4 className="text-base lg:text-lg font-black tracking-tighter uppercase">Ponto</h4>
                 </div>
              </div>
-             <CalendarDays className="w-10 h-10 lg:w-12 lg:h-12 opacity-50 group-hover:scale-110 transition-transform duration-500" />
+             <CalendarDays className="w-8 h-8 lg:w-10 lg:h-10 opacity-40 group-hover:scale-110 transition-transform duration-500" />
           </div>
         </div>
       </div>
