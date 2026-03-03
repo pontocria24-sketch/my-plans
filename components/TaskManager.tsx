@@ -16,6 +16,7 @@ import {
   DragStartEvent,
   DragOverlay,
   defaultDropAnimationSideEffects,
+  useDroppable,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -25,7 +26,6 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useDroppable } from '@dnd-kit/core';
 
 interface Props {
   tasks: Task[];
@@ -104,7 +104,7 @@ const SortableTask: React.FC<SortableTaskProps> = ({ task, priorities, onEdit, o
           <div {...attributes} {...listeners} className="p-1 cursor-grab active:cursor-grabbing text-slate-400 dark:text-slate-600 hover:text-indigo-400">
             <GripVertical className="w-4 h-4" />
           </div>
-          <span className={`text-[7px] lg:text-[8px] font-black uppercase tracking-[0.2em] px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg lg:rounded-xl border flex items-center gap-1.5 lg:gap-2 ${prio.color} ${prio.bg}/10 border-${prio.value === 'High' ? 'rose' : prio.value === 'Medium' ? 'amber' : 'emerald'}-500/20`}>
+          <span className={`text-[7px] lg:text-[8px] font-black uppercase tracking-[0.2em] px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg lg:rounded-xl border flex items-center gap-1.5 lg:gap-2 ${prio.color} ${prio.bg}/10 ${prio.value === 'Urgent' ? 'border-rose-600/30' : prio.value === 'High' ? 'border-rose-500/20' : prio.value === 'Medium' ? 'border-amber-500/20' : 'border-emerald-500/20'}`}>
              <Zap className="w-2.5 h-2.5 lg:w-3 lg:h-3" /> {prio.label}
           </span>
         </div>
@@ -171,6 +171,7 @@ const TaskManager: React.FC<Props> = ({ tasks, setTasks, columns, setColumns }) 
   ];
 
   const priorities: { value: Priority; label: string; color: string; bg: string }[] = [
+    { value: 'Urgent', label: 'Urgente', color: 'text-rose-600', bg: 'bg-rose-600' },
     { value: 'High', label: 'Alta Prioridade', color: 'text-rose-500', bg: 'bg-rose-500' },
     { value: 'Medium', label: 'Prioridade Média', color: 'text-amber-500', bg: 'bg-amber-500' },
     { value: 'Low', label: 'Prioridade Baixa', color: 'text-emerald-500', bg: 'bg-emerald-500' }

@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, CheckSquare, Lightbulb, Target, Calendar, 
   Video, Settings as SettingsIcon, Timer, Rocket, Clock, 
-  Lock, User, ArrowRight, ShieldCheck, UserPlus, Moon, Sun, X
+  Lock, User, ArrowRight, ShieldCheck, UserPlus, Moon, Sun, X,
+  Menu, LogOut
 } from 'lucide-react';
 import { View, Task, Idea, Goal, Event, ContentScript, WorkLog, UserConfig } from './types.ts';
 import Dashboard from './components/Dashboard.tsx';
@@ -47,7 +48,19 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => (localStorage.getItem('myplans_theme') as 'dark' | 'light') || 'dark');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [activeView, setActiveView] = useState<View>('Dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // States do formulário
   const [name, setName] = useState('');
@@ -264,7 +277,7 @@ const App: React.FC = () => {
           ))}
         </nav>
         <button onClick={() => { setIsLoggedIn(false); localStorage.removeItem('myplans_auth'); }} className="p-4 lg:p-6 text-slate-500 hover:text-rose-500 flex items-center gap-4 transition-colors">
-          <Clock className="w-5 h-5" /> {(sidebarOpen || window.innerWidth < 1024) && <span className="font-black text-[10px] uppercase">Sair</span>}
+          <LogOut className="w-5 h-5" /> {(sidebarOpen || window.innerWidth < 1024) && <span className="font-black text-[10px] uppercase">Sair</span>}
         </button>
       </aside>
 
@@ -276,11 +289,11 @@ const App: React.FC = () => {
         ></div>
       )}
 
-      <main className="flex-1 flex flex-col min-w-0 lg:ml-0 transition-all duration-500">
+      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-500 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
         <header className="h-16 lg:h-20 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/30 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 z-40">
           <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 lg:p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all border border-slate-200 dark:border-slate-700">
-              <Clock className="w-5 h-5" />
+              <Menu className="w-5 h-5" />
             </button>
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
